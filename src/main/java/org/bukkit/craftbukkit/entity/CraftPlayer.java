@@ -57,6 +57,8 @@ import org.bukkit.event.player.PlayerRegisterChannelEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerUnregisterChannelEvent;
 import org.bukkit.inventory.InventoryView.Property;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.map.MapCursor;
 import org.bukkit.map.MapView;
 import org.bukkit.metadata.MetadataValue;
@@ -1353,6 +1355,21 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     @Override
     public int getPing() {
         return getHandle().ping;
+    }
+
+    @Override
+    public void sendActionBar(String message) {
+        PacketPlayOutChat packet = new PacketPlayOutChat(new ChatComponentText(message), (byte) 2);
+        getHandle().playerConnection.sendPacket(packet);
+    }
+
+    @Override
+    public ItemStack getItemHead() {
+        ItemStack stack = new ItemStack(Material.SKULL, 1);
+        SkullMeta meta = (SkullMeta) stack.getItemMeta();
+        meta.setOwner(this.getName());
+        stack.setItemMeta(meta);
+        return stack;
     }
 
     // Spigot start
