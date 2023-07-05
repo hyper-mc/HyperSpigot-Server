@@ -23,6 +23,12 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
+import balbucio.responsivescheduler.ResponsiveScheduler;
+import balbucio.sqlapi.sqlite.SQLiteInstance;
+import balbucio.sqlapi.sqlite.SqliteConfig;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.server.*;
 
 import org.bukkit.BanList;
@@ -125,6 +131,8 @@ import io.netty.handler.codec.base64.Base64;
 import jline.console.ConsoleReader;
 import net.md_5.bungee.api.chat.BaseComponent;
 
+@Getter
+@Setter
 public final class CraftServer implements Server {
     private static final Player[] EMPTY_PLAYER_ARRAY = new Player[0];
     private final String serverName = "CraftBukkit";
@@ -165,6 +173,9 @@ public final class CraftServer implements Server {
     private final UUID invalidUserUUID = UUID.nameUUIDFromBytes("InvalidUsername".getBytes(Charsets.UTF_8));
     private final List<CraftPlayer> playerView;
     public int reloadCount;
+    private SqliteConfig sqliteConfig;
+    private SQLiteInstance sqLiteInstance;
+    private ResponsiveScheduler responsiveScheduler;
 
     private final class BooleanWrapper {
         private boolean value = true;
@@ -187,6 +198,11 @@ public final class CraftServer implements Server {
         this.serverVersion = CraftServer.class.getPackage().getImplementationVersion();
         online.value = console.getPropertyManager().getBoolean("online-mode", true);
 
+        sqliteConfig = new SqliteConfig(new File("database.db"));
+        sqliteConfig.createFile();
+        sqliteConfig.setMaxRows(Integer.MAX_VALUE);
+        sqLiteInstance = new SQLiteInstance(sqliteConfig);
+        responsiveScheduler = new ResponsiveScheduler();
         Bukkit.setServer(this);
 
         // Register all the Enchantments and PotionTypes now so we can stop new registration immediately after
@@ -204,6 +220,7 @@ public final class CraftServer implements Server {
 
         configuration = YamlConfiguration.loadConfiguration(getConfigFile());
         configuration.options().copyDefaults(true);
+        configuration.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("configurations/bukkit.yml"), Charsets.UTF_8)));
         configuration.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("configurations/bukkit.yml"), Charsets.UTF_8)));
         ConfigurationSection legacyAlias = null;
         if (!configuration.isString("aliases")) {
@@ -1697,6 +1714,11 @@ public final class CraftServer implements Server {
     @Override
     public UnsafeValues getUnsafe() {
         return CraftMagicNumbers.INSTANCE;
+    }
+
+    @Override
+    public SQLiteInstance getSQLiteInstance() {
+        return sqLiteInstance;
     }
 
     private final Spigot spigot = new Spigot()

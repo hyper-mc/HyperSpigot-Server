@@ -187,6 +187,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
 
         // Spigot Start - Move DedicatedPlayerList up and bring plugin loading from CraftServer to here
         // this.a((PlayerList) (new DedicatedPlayerList(this))); // CraftBukkit
+
         server.loadPlugins();
         server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.STARTUP);
         // Spigot End
