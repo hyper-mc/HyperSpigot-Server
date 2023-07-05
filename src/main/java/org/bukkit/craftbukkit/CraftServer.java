@@ -138,7 +138,7 @@ public final class CraftServer implements Server {
     private static final Player[] EMPTY_PLAYER_ARRAY = new Player[0];
     private String serverName = "HyperSpigot";
     private String serverVersion = "v1.0.1-MC1.8.8";
-    private String bukkitVersion = "1.8.8-R0.1";
+    private String bukkitVersion = "1.8.8";
     private final Logger logger = Logger.getLogger("Minecraft");
     private final ServicesManager servicesManager = new SimpleServicesManager();
     private final CraftScheduler scheduler = new CraftScheduler();
