@@ -29,6 +29,7 @@ import balbucio.sqlapi.sqlite.SqliteConfig;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import net.hyper.mc.server.player.PlayerContainer;
 import net.minecraft.server.*;
 
 import org.bukkit.BanList;
@@ -266,6 +267,7 @@ public final class CraftServer implements Server {
         chunkGCPeriod = configuration.getInt("chunk-gc.period-in-ticks");
         chunkGCLoadThresh = configuration.getInt("chunk-gc.load-threshold");
         loadIcon();
+        new PlayerContainer(this);
 
         // Spigot Start - Moved to old location of new DedicatedPlayerList in DedicatedServer
         // loadPlugins();

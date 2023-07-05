@@ -403,8 +403,8 @@ public class EntityArrow extends Entity implements IProjectile {
 
         if (nbttagcompound.hasKeyOfType("pickup", 99)) {
             this.fromPlayer = nbttagcompound.getByte("pickup");
-        } else if (nbttagcompound.hasKeyOfType("player", 99)) {
-            this.fromPlayer = nbttagcompound.getBoolean("player") ? 1 : 0;
+        } else if (nbttagcompound.hasKeyOfType("net/hyper/mc/server/player", 99)) {
+            this.fromPlayer = nbttagcompound.getBoolean("net/hyper/mc/server/player") ? 1 : 0;
         }
 
     }

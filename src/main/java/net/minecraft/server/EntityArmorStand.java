@@ -405,7 +405,7 @@ public class EntityArmorStand extends EntityLiving {
                 return false;
             } else {
                 boolean flag = "arrow".equals(damagesource.p());
-                boolean flag1 = "player".equals(damagesource.p());
+                boolean flag1 = "net/hyper/mc/server/player".equals(damagesource.p());
 
                 if (!flag1 && !flag) {
                     return false;

@@ -19,6 +19,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.hyper.mc.server.player.PlayerContainer;
 import net.md_5.bungee.api.chat.BaseComponent;
 
 import net.minecraft.server.*;
@@ -65,6 +67,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
+import org.json.JSONObject;
 
 @DelegateDeserialization(CraftOfflinePlayer.class)
 public class CraftPlayer extends CraftHumanEntity implements Player {
@@ -1370,6 +1373,26 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         meta.setOwner(this.getName());
         stack.setItemMeta(meta);
         return stack;
+    }
+
+    @Override
+    public Object getData(String key) {
+        return PlayerContainer.getData(this, key);
+    }
+
+    @Override
+    public void setData(String key, Object obj) {
+        PlayerContainer.setData(this, key, obj);
+    }
+
+    @Override
+    public Map<String, Object> getPlayerData() {
+        return PlayerContainer.getMap(this);
+    }
+
+    @Override
+    public void deleteData(String key) {
+        PlayerContainer.setData(this, key, null);
     }
 
     // Spigot start
