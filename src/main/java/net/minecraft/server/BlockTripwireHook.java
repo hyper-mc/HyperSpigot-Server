@@ -1,8 +1,8 @@
 package net.minecraft.server;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Random;
 
 import org.bukkit.event.block.BlockRedstoneEvent; // CraftBukkit
@@ -113,7 +113,7 @@ public class BlockTripwireHook extends Block {
                 flag5 = false;
             } else {
                 if (k == i) {
-                    iblockdata2 = (IBlockData) Objects.firstNonNull(iblockdata1, iblockdata2);
+                    iblockdata2 = (IBlockData) Objects.requireNonNullElse(iblockdata1, iblockdata2);
                 }
 
                 boolean flag7 = !((Boolean) iblockdata2.get(BlockTripwire.DISARMED)).booleanValue();

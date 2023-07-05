@@ -202,6 +202,9 @@ public final class CraftServer implements Server {
         sqliteConfig = new SqliteConfig(new File("database.db"));
         sqliteConfig.createFile();
         sqliteConfig.setMaxRows(Integer.MAX_VALUE);
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {}
         sqLiteInstance = new SQLiteInstance(sqliteConfig);
         responsiveScheduler = new ResponsiveScheduler();
         Bukkit.setServer(this);
