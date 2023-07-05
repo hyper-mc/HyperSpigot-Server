@@ -27,6 +27,7 @@ import org.bukkit.craftbukkit.SpigotTimings; // Spigot
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.craftbukkit.util.Waitable;
 import org.bukkit.event.server.RemoteServerCommandEvent;
+import org.spigotmc.SpigotConfig;
 // CraftBukkit end
 
 public class DedicatedServer extends MinecraftServer implements IMinecraftServer {
@@ -118,15 +119,12 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
 
         thread.setDaemon(true);
         thread.start();
-        DedicatedServer.LOGGER.info("Starting minecraft server version 1.8.8");
         if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L) {
             DedicatedServer.LOGGER.warn("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar minecraft_server.jar\"");
         }
-
-        DedicatedServer.LOGGER.info("Loading properties");
         this.propertyManager = new PropertyManager(this.options); // CraftBukkit - CLI argument support
 
-        DedicatedServer.LOGGER.info("Ao executar o HyperSpigot você concorda com a EULA do Minecraft!");
+        DedicatedServer.LOGGER.info("Ao executar o HyperSpigot voce concorda com a EULA do Minecraft!");
         // Spigot Start
         // Spigot End
         if (this.T()) {
@@ -154,7 +152,6 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
         int i = this.propertyManager.getInt("gamemode", WorldSettings.EnumGamemode.SURVIVAL.getId());
 
         this.r = WorldSettings.a(i);
-        DedicatedServer.LOGGER.info("Default game type: " + this.r);
         InetAddress inetaddress = null;
 
         if (this.getServerIp().length() > 0) {
@@ -166,11 +163,9 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
         }
         // Spigot start
         this.a((PlayerList) (new DedicatedPlayerList(this)));
-        org.spigotmc.SpigotConfig.init((File) options.valueOf("spigot-settings"));
-        org.spigotmc.SpigotConfig.registerCommands();
+        SpigotConfig.init((File) options.valueOf("spigot-settings"));
+        SpigotConfig.registerCommands();
         // Spigot end
-
-        DedicatedServer.LOGGER.info("Generating keypair");
         this.a(MinecraftEncryption.b());
         DedicatedServer.LOGGER.info("Starting Minecraft server on " + (this.getServerIp().length() == 0 ? "*" : this.getServerIp()) + ":" + this.R());
 
@@ -184,24 +179,9 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
                 return false;
             }
         }
-
-        // Spigot Start - Move DedicatedPlayerList up and bring plugin loading from CraftServer to here
-        // this.a((PlayerList) (new DedicatedPlayerList(this))); // CraftBukkit
-
         server.loadPlugins();
         server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.STARTUP);
         // Spigot End
-
-        if (!this.getOnlineMode()) {
-            DedicatedServer.LOGGER.warn("**** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!");
-            // Spigot start
-            if (org.spigotmc.SpigotConfig.bungee) {
-                DedicatedServer.LOGGER.warn("Whilst this makes it possible to use BungeeCord, unless access to your server is properly restricted, it also opens up the ability for hackers to connect with any username they choose.");
-                DedicatedServer.LOGGER.warn("Please see http://www.spigotmc.org/wiki/firewall-guide/ for further information.");
-            } else {
-                DedicatedServer.LOGGER.warn("While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.");
-            }
-        }
 
         if (this.aR()) {
             this.getUserCache().c();
@@ -249,7 +229,6 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
             this.c((this.getMaxBuildHeight() + 8) / 16 * 16);
             this.c(MathHelper.clamp(this.getMaxBuildHeight(), 64, 256));
             this.propertyManager.setProperty("max-build-height", Integer.valueOf(this.getMaxBuildHeight()));
-            DedicatedServer.LOGGER.info("Preparing level \"" + this.U() + "\"");
             this.a(this.U(), this.U(), k, worldtype, s2);
             long i1 = System.nanoTime() - j;
             String s3 = String.format("%.3fs", new Object[]{Double.valueOf((double) i1 / 1.0E9D)});
@@ -522,9 +501,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
         return this.propertyManager.getInt("network-compression-threshold", super.aK());
     }
 
-    protected boolean aR() {
-        server.getLogger().info("**** Beginning UUID conversion, this may take A LONG time ****"); // Spigot, let the user know whats up!
-        boolean flag = false;
+    protected boolean aR() {boolean flag = false;
 
         int i;
 

@@ -10,7 +10,7 @@ public class SpigotWorldConfig
 
     private final String worldName;
     private final YamlConfiguration config;
-    private boolean verbose;
+    private boolean verbose = false;
 
     public SpigotWorldConfig(String worldName)
     {
@@ -21,7 +21,6 @@ public class SpigotWorldConfig
 
     public void init()
     {
-        this.verbose = getBoolean( "verbose", true );
 
         log( "-------- World Settings For [" + worldName + "] --------" );
         SpigotConfig.readConfig( SpigotWorldConfig.class, this );

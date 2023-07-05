@@ -2,15 +2,19 @@ package org.bukkit.craftbukkit;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import io.netty.channel.Channel;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.minecraft.server.MinecraftServer;
 import org.fusesource.jansi.AnsiConsole;
+import sun.misc.Unsafe;
 
 public class Main {
     public static boolean useJline = true;
@@ -189,11 +193,33 @@ public class Main {
                     System.out.println( "Please see http://www.spigotmc.org/wiki/changing-permgen-size/ for more details and more in-depth instructions." );
                 }
                 // Spigot End
-                System.out.println("Loading libraries, please wait...");
+                disableWarning();
+                System.out.println("\n" +
+                        "    __  __                      _____       _             __ \n" +
+                        "   / / / /_  ______  ___  _____/ ___/____  (_)___ _____  / /_\n" +
+                        "  / /_/ / / / / __ \\/ _ \\/ ___/\\__ \\/ __ \\/ / __ `/ __ \\/ __/\n" +
+                        " / __  / /_/ / /_/ /  __/ /   ___/ / /_/ / / /_/ / /_/ / /_  \n" +
+                        "/_/ /_/\\__, / .___/\\___/_/   /____/ .___/_/\\__, /\\____/\\__/  \n" +
+                        "      /____/_/                   /_/      /____/             \n");
+                System.out.println("HyperSpigot is developed and maintained by the HyperNetwork team.");
                 MinecraftServer.main(options);
             } catch (Throwable t) {
                 t.printStackTrace();
             }
+        }
+    }
+
+    public static void disableWarning() {
+        try {
+            Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
+            theUnsafe.setAccessible(true);
+            Unsafe u = (Unsafe) theUnsafe.get(null);
+
+            Class cls = Class.forName("jdk.internal.module.IllegalAccessLogger");
+            Field logger = cls.getDeclaredField("logger");
+            u.putObjectVolatile(cls, u.staticFieldOffset(logger), null);
+        } catch (Exception e) {
+            // ignore
         }
     }
 

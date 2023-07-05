@@ -136,9 +136,9 @@ import net.md_5.bungee.api.chat.BaseComponent;
 @Setter
 public final class CraftServer implements Server {
     private static final Player[] EMPTY_PLAYER_ARRAY = new Player[0];
-    private final String serverName = "HyperSpigot";
-    private final String serverVersion;
-    private final String bukkitVersion = Versioning.getBukkitVersion();
+    private String serverName = "HyperSpigot";
+    private String serverVersion = "v1.0.1-MC1.8.8";
+    private String bukkitVersion = "1.8.8-R0.1";
     private final Logger logger = Logger.getLogger("Minecraft");
     private final ServicesManager servicesManager = new SimpleServicesManager();
     private final CraftScheduler scheduler = new CraftScheduler();
@@ -196,7 +196,6 @@ public final class CraftServer implements Server {
                 return player.getBukkitEntity();
             }
         }));
-        this.serverVersion = CraftServer.class.getPackage().getImplementationVersion();
         online.value = console.getPropertyManager().getBoolean("online-mode", true);
 
         sqliteConfig = new SqliteConfig(new File("database.db"));

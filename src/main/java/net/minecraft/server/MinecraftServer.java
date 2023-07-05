@@ -203,31 +203,6 @@ public abstract class MinecraftServer implements Runnable, ICommandListener, IAs
         this.a(s);
         this.b("menu.loadingLevel");
         this.worldServer = new WorldServer[3];
-        /* CraftBukkit start - Remove ticktime arrays and worldsettings
-        this.i = new long[this.worldServer.length][100];
-        IDataManager idatamanager = this.convertable.a(s, true);
-
-        this.a(this.U(), idatamanager);
-        WorldData worlddata = idatamanager.getWorldData();
-        WorldSettings worldsettings;
-
-        if (worlddata == null) {
-            if (this.X()) {
-                worldsettings = DemoWorldServer.a;
-            } else {
-                worldsettings = new WorldSettings(i, this.getGamemode(), this.getGenerateStructures(), this.isHardcore(), worldtype);
-                worldsettings.setGeneratorSettings(s2);
-                if (this.M) {
-                    worldsettings.a();
-                }
-            }
-
-            worlddata = new WorldData(worldsettings, s1);
-        } else {
-            worlddata.a(s1);
-            worldsettings = new WorldSettings(worlddata);
-        }
-        */
         int worldCount = 3;
 
         for (int j = 0; j < worldCount; ++j) {
@@ -946,10 +921,6 @@ public abstract class MinecraftServer implements Runnable, ICommandListener, IAs
     }
 
     public void C() {
-        /* CraftBukkit start - prevent abuse
-        this.serverThread = new Thread(this, "Server thread");
-        this.serverThread.start();
-        // CraftBukkit end */
     }
 
     public File d(String s) {
@@ -1052,48 +1023,7 @@ public abstract class MinecraftServer implements Runnable, ICommandListener, IAs
     }
 
     public List<String> tabCompleteCommand(ICommandListener icommandlistener, String s, BlockPosition blockposition) {
-        /* CraftBukkit start - Allow tab-completion of Bukkit commands
-        ArrayList arraylist = Lists.newArrayList();
-
-        if (s.startsWith("/")) {
-            s = s.substring(1);
-            boolean flag = !s.contains(" ");
-            List list = this.b.a(icommandlistener, s, blockposition);
-
-            if (list != null) {
-                Iterator iterator = list.iterator();
-
-                while (iterator.hasNext()) {
-                    String s1 = (String) iterator.next();
-
-                    if (flag) {
-                        arraylist.add("/" + s1);
-                    } else {
-                        arraylist.add(s1);
-                    }
-                }
-            }
-
-            return arraylist;
-        } else {
-            String[] astring = s.split(" ", -1);
-            String s2 = astring[astring.length - 1];
-            String[] astring1 = this.v.f();
-            int i = astring1.length;
-
-            for (int j = 0; j < i; ++j) {
-                String s3 = astring1[j];
-
-                if (CommandAbstract.a(s2, s3)) {
-                    arraylist.add(s3);
-                }
-            }
-
-            return arraylist;
-        }
-        */
         return server.tabComplete(icommandlistener, s);
-        // CraftBukkit end
     }
 
     public static MinecraftServer getServer() {
@@ -1101,7 +1031,7 @@ public abstract class MinecraftServer implements Runnable, ICommandListener, IAs
     }
 
     public boolean O() {
-        return true; // CraftBukkit
+        return true;
     }
 
     public String getName() {
