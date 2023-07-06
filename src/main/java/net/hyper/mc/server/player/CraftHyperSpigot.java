@@ -1,5 +1,7 @@
 package net.hyper.mc.server.player;
 
+import lombok.Data;
+import lombok.Getter;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.spigot.HyperSpigot;
 import org.bukkit.configuration.Configuration;
@@ -9,6 +11,8 @@ import org.bukkit.craftbukkit.CraftServer;
 import java.io.File;
 import java.nio.file.Files;
 
+@Data
+@Getter
 public class CraftHyperSpigot implements HyperSpigot {
 
     private File configFile = new File("/hyperspigot.yml");
@@ -44,6 +48,6 @@ public class CraftHyperSpigot implements HyperSpigot {
 
     @Override
     public HyperMessageBroker getMessenger() {
-        return messageBroker;
+        return null;
     }
 }

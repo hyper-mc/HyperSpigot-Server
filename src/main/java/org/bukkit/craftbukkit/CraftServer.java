@@ -272,8 +272,8 @@ public final class CraftServer implements Server {
         chunkGCPeriod = configuration.getInt("chunk-gc.period-in-ticks");
         chunkGCLoadThresh = configuration.getInt("chunk-gc.load-threshold");
         loadIcon();
+        hyperSpigot = new CraftHyperSpigot(this);
         new PlayerContainer(this);
-        hyperSpigot = new CraftHyperSpigot();
 
         // Spigot Start - Moved to old location of new DedicatedPlayerList in DedicatedServer
         // loadPlugins();

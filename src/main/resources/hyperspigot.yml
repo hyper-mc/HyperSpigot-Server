@@ -1,4 +1,10 @@
+#Configurações relacionadas ao HyperMessageBroker
 hypermessagebroker:
-  active: false
+  active: false # Ative para utilizar o HMB
   ip: "localhost"
   port: 25465
+
+# Configurações relacionadas ao PlayerContainer
+playerContainer:
+  # Mantenha ativo para sincronizar entre servidores usando o HMB
+  sync: true
