@@ -1,12 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>hyperspigot</artifactId>
-    <packaging>jar</packaging>
-    <version>1.0.1-MC1.8.8</version>
-    <name>HyperSpigot</name>
-    <url>http://www.spigotmc.org</url>
+    <parent>
+        <artifactId>HyperSpigot</artifactId>
+        <groupId>net.hyper.mc</groupId>
+        <version>1.0.1-MC1.8.8</version>
+    </parent>
 
+    <artifactId>HyperSpigot-Server</artifactId>
+    <name>HyperSpigot-Server</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <api.version>1.8.8</api.version>
@@ -14,17 +16,9 @@
         <minecraft.version>1.8.8</minecraft.version>
         <minecraft_version>1_8_R3</minecraft_version>
         <buildtag.prefix>git-Bukkit-</buildtag.prefix>
-        <buildtag.suffix></buildtag.suffix>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
-
-    <parent>
-        <groupId>net.hyper.mc</groupId>
-        <artifactId>hyperspigot-parent</artifactId>
-        <version>dev-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
 
     <repositories>
         <repository>
@@ -38,53 +32,41 @@
             <groupId>net.sf.trove4j</groupId>
             <artifactId>trove4j</artifactId>
             <version>3.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
-            <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.20.0</version>
-            <scope>compile</scope>
+            <groupId>net.hyper.mc</groupId>
+            <artifactId>HyperSpigot-API</artifactId>
+            <version>1.0.1-MC1.8.8</version>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>minecraft-server</artifactId>
             <version>${minecraft.version}-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.sf.jopt-simple</groupId>
             <artifactId>jopt-simple</artifactId>
             <version>6.0-alpha-3</version>
-            <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
             <version>2.14.6</version>
-            <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.40.1.0</version>
-            <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
-            <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -99,12 +81,10 @@
             <version>v1.0.2</version>
             <scope>compile</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.rabbitmq/amqp-client -->
         <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>5.18.0</version>
-            <scope>compile</scope>
+            <groupId>com.github.hyper-mc</groupId>
+            <artifactId>HyperMessageBroker-API</artifactId>
+            <version>1.0</version>
         </dependency>
 
         <!-- testing -->
@@ -135,177 +115,15 @@
         <defaultGoal>install</defaultGoal>
         <plugins>
             <plugin>
-                <groupId>net.md-5</groupId>
-                <artifactId>scriptus</artifactId>
-                <version>0.2</version>
-                <executions>
-                    <execution>
-                        <id>ex-spigot</id>
-                        <configuration>
-                            <format>git-Spigot-%s</format>
-                            <scmDirectory>../</scmDirectory>
-                            <descriptionProperty>spigot.desc</descriptionProperty>
-                        </configuration>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>describe</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>ex-craftbukkit</id>
-                        <configuration>
-                            <format>-%s</format>
-                            <scmDirectory>../../CraftBukkit</scmDirectory>
-                            <descriptionProperty>craftbukkit.desc</descriptionProperty>
-                        </configuration>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>describe</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>  
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Main-Class>org.bukkit.craftbukkit.Main</Main-Class>
-                            <Implementation-Title>CraftBukkit</Implementation-Title>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <Implementation-Version>${spigot.desc}${craftbukkit.desc}</Implementation-Version>
-                            <Implementation-Vendor>Bukkit Team</Implementation-Vendor>
-                            <Specification-Title>Bukkit</Specification-Title>
-                            <Specification-Version>${api.version}</Specification-Version>
-                            <Specification-Vendor>Bukkit Team</Specification-Vendor>
-                        </manifestEntries>
-                        <manifestSections>
-                            <manifestSection>
-                                <name>net/bukkit/</name>
-                                <manifestEntries>
-                                    <Sealed>true</Sealed>
-                                </manifestEntries>
-                            </manifestSection>
-                            <manifestSection>
-                                <name>com/bukkit/</name>
-                                <manifestEntries>
-                                    <Sealed>true</Sealed>
-                                </manifestEntries>
-                            </manifestSection>
-                            <manifestSection>
-                                <name>org/bukkit/</name>
-                                <manifestEntries>
-                                    <Sealed>true</Sealed>
-                                </manifestEntries>
-                            </manifestSection>
-                        </manifestSections>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>animal-sniffer-maven-plugin</artifactId>
-                <version>1.13</version>
-                <configuration>
-                    <signature>
-                        <groupId>org.codehaus.mojo.signature</groupId>
-                        <artifactId>java16</artifactId>
-                        <version>1.1</version>
-                    </signature>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <relocations>
-                                <relocation>
-                                    <pattern>joptsimple</pattern>
-                                    <shadedPattern>org.bukkit.craftbukkit.libs.joptsimple</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>jline</pattern>
-                                    <shadedPattern>org.bukkit.craftbukkit.libs.jline</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.ibex</pattern>
-                                    <shadedPattern>org.bukkit.craftbukkit.libs.org.ibex</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.gjt</pattern>
-                                    <shadedPattern>org.bukkit.craftbukkit.libs.org.gjt</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.bukkit.craftbukkit</pattern>
-                                    <shadedPattern>org.bukkit.craftbukkit.v${minecraft_version}</shadedPattern>
-                                    <excludes>
-                                        <exclude>org.bukkit.craftbukkit.Main*</exclude>
-                                    </excludes>
-                                </relocation>
-                                <relocation>
-                                    <pattern>net.minecraft.server</pattern>
-                                    <shadedPattern>net.minecraft.server.v${minecraft_version}</shadedPattern>
-                                </relocation>
-                            </relocations>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Gotta go after shade plugin -->
-            <plugin>
-                <groupId>net.md-5</groupId>
-                <artifactId>specialsource-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>remap</goal>
-                        </goals>
-                        <configuration>
-                            <srgIn>${project.basedir}/deprecation-mappings.csrg</srgIn>
-                            <accessIn>${project.basedir}/deprecation-mappings.at</accessIn>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <!-- versions after this appear to be broken -->
                 <version>3.1</version>
-                <dependencies>
-                    <!-- we need our custom version as it fixes some bugs on case sensitive file systems -->
-                    <dependency>
-                        <groupId>org.codehaus.plexus</groupId>
-                        <artifactId>plexus-compiler-eclipse</artifactId>
-                        <version>2.5.0-spigotmc</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <source>9</source>
-                    <target>9</target>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.18</version>
-                <configuration>
-                    <workingDirectory>${basedir}/target/test-server</workingDirectory>
-                    <excludes>
-                        <exclude>org/bukkit/craftbukkit/inventory/ItemStack*Test.java</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
         </plugins>
     </build>

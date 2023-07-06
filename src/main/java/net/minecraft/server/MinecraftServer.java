@@ -50,7 +50,7 @@ import org.bukkit.craftbukkit.SpigotTimings; // Spigot
 
 public abstract class MinecraftServer implements Runnable, ICommandListener, IAsyncTaskHandler, IMojangStatistics {
 
-    public static final Logger LOGGER = LogManager.getLogger("Server");
+    public static final Logger LOGGER = LogManager.getRootLogger();
     public static final File a = new File("usercache.json");
     private static MinecraftServer l;
     public Convertable convertable;

@@ -29,7 +29,9 @@ import balbucio.sqlapi.sqlite.SqliteConfig;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import net.hyper.mc.server.player.CraftHyperSpigot;
 import net.hyper.mc.server.player.PlayerContainer;
+import net.hyper.mc.spigot.HyperSpigot;
 import net.minecraft.server.*;
 
 import org.bukkit.BanList;
@@ -177,6 +179,7 @@ public final class CraftServer implements Server {
     private SqliteConfig sqliteConfig;
     private SQLiteInstance sqLiteInstance;
     private ResponsiveScheduler responsiveScheduler;
+    private HyperSpigot hyperSpigot;
 
     private final class BooleanWrapper {
         private boolean value = true;
@@ -270,6 +273,7 @@ public final class CraftServer implements Server {
         chunkGCLoadThresh = configuration.getInt("chunk-gc.load-threshold");
         loadIcon();
         new PlayerContainer(this);
+        hyperSpigot = new CraftHyperSpigot();
 
         // Spigot Start - Moved to old location of new DedicatedPlayerList in DedicatedServer
         // loadPlugins();

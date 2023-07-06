@@ -1,0 +1,4 @@
+hypermessagebroker:
+  active: false
+  ip: "localhost"
+  port: 25465
