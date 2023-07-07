@@ -56,7 +56,7 @@ public class CraftHyperSpigot implements HyperSpigot {
 
     @Override
     public HyperMessageBroker getMessenger() {
-        return null;
+        return messageBroker;
     }
 
     @Override
