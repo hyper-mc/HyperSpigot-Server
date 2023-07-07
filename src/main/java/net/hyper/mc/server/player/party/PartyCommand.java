@@ -44,4 +44,14 @@ public class PartyCommand {
     public void puxar(Player player){
 
     }
+
+    @Command(names = {"party excluir", "party deletar"}, permission = "spigot.party", playerOnly = true)
+    public void excluir(Player player){
+        CraftPartyManager.getInstance().delete(player);
+    }
+
+    @Command(names = {"party transferir"}, permission = "spigot.party", playerOnly = true)
+    public void transferir(Player player){
+
+    }
 }

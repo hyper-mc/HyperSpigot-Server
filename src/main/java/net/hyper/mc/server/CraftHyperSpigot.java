@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.bungeecord.BungeeManager;
+import net.hyper.mc.server.player.party.CraftPartyManager;
 import net.hyper.mc.spigot.HyperSpigot;
 import net.hyper.mc.spigot.bungeecord.IBungeeManager;
 import org.bukkit.configuration.Configuration;
@@ -17,16 +18,20 @@ import java.nio.file.Files;
 @Getter
 public class CraftHyperSpigot implements HyperSpigot {
 
-    private File configFile = new File("/hyperspigot.yml");
+    private File configFile = new File("hyperspigot.yml");
     private Configuration configuration;
     private HyperMessageBroker messageBroker;
     private BungeeManager bungeeManager;
+    private CraftPartyManager partyManager;
     private CraftServer server;
 
     public CraftHyperSpigot(CraftServer server) {
         this.server = server;
         createAndLoadFiles();
         configureMessageBroker();
+        if(configuration.getBoolean("party.active") && configuration.getBoolean("hypermessagebroker.active")){
+            this.partyManager = new CraftPartyManager(server);
+        }
     }
 
     private void createAndLoadFiles() {

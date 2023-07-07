@@ -43,7 +43,7 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>minecraft-server</artifactId>
             <version>${minecraft.version}-SNAPSHOT</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.sf.jopt-simple</groupId>

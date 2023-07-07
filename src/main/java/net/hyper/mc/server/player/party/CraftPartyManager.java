@@ -9,6 +9,7 @@ import net.hyper.mc.spigot.player.party.PartyManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Player;
 import org.json.JSONObject;
@@ -31,7 +32,7 @@ public class CraftPartyManager implements PartyManager {
         instance = this;
         this.server = server;
         this.sqlite = server.getSQLiteInstance();
-        sqlite.createTable("party", "owner VARCHAR(255), name VARCHAR(255), id VARCHAR(255), data TEXT");
+        Bukkit.registerCommand(PartyCommand.class);
         this.server.getHyperSpigot().getMessenger().registerConsumer("party", m -> {
             JSONObject payload = new JSONObject((String) m.getValue());
             String channel = payload.getString("channel");
@@ -48,9 +49,12 @@ public class CraftPartyManager implements PartyManager {
                     component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party aceitar #"+payload.getString("party")));
                     target.spigot().sendMessage(component);
                     target.sendMessage("");
+                    target.playSound(target.getLocation(), Sound.VILLAGER_YES, 2, 2);
                 }
-            } else if(channel.equalsIgnoreCase(payload.getString("update"))){
+            } else if(channel.equalsIgnoreCase("update")){
 
+            } else if(channel.equalsIgnoreCase("delete")){
+                parties.stream().filter(p -> p.getId().equalsIgnoreCase(payload.getString("id"))).forEach(p -> parties.remove(p));
             }
         });
     }
@@ -127,6 +131,7 @@ public class CraftPartyManager implements PartyManager {
             component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party aceitar "+party.getOwner().getName()));
             target.spigot().sendMessage(component);
             target.sendMessage("");
+            target.playSound(target.getLocation(), Sound.VILLAGER_YES, 2, 2);
         } else{
             this.server.getHyperSpigot().getMessenger().sendMessage("party", new JSONObject()
                     .put("channel", "update")
@@ -141,5 +146,22 @@ public class CraftPartyManager implements PartyManager {
                             .toString());
         }
         player.sendMessage("§aO jogador foi convidado!");
+    }
+
+    public void delete(Player player){
+        Party party = getParty(player);
+        if(party != null){
+            if(party.getOwner().getName().equalsIgnoreCase(player.getName())){
+                player.sendMessage("§cSomente o dono pode deletar a party!");
+                return;
+            }
+            party.broadcast("§cO dono deletou a party.");
+            this.server.getHyperSpigot().getMessenger().sendMessage("party", new JSONObject()
+                    .put("channel", "delete")
+                    .put("id", party.getId())
+                    .toString());
+        } else{
+            player.sendMessage("§cVocê não tem uma party!");
+        }
     }
 }

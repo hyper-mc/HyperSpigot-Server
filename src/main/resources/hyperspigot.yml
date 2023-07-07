@@ -9,7 +9,6 @@ playerContainer:
   # Mantenha ativo para sincronizar entre servidores usando o HMB
   sync: true
 
+# Precisa do HMB ativo para que funcione!
 party:
   active: false # Ative para utilizar o /party nativo
-  #Mantenha ativo para sincronizar a party entre os servidores conectados no HMB
-  sync: true
