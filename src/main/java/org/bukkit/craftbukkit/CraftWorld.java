@@ -1219,6 +1219,13 @@ public class CraftWorld implements World {
         }
     }
 
+    @Override
+    public void sendPluginMessage(String channel, byte[] message) {
+        for (Player player : getPlayers()) {
+            player.sendPluginMessage(source, channel, message);
+        }
+    }
+
     public Set<String> getListeningPluginChannels() {
         Set<String> result = new HashSet<String>();
 

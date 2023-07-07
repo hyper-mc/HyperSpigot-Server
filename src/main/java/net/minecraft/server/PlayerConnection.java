@@ -2114,7 +2114,7 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
             packetplayincustompayload.b().readBytes(data);
             String channel = packetplayincustompayload.a();
             if(channel.equalsIgnoreCase("BungeeCord")){
-                BungeeManager.getInstance().pluginMessage(data);
+                BungeeManager.getInstance().pluginMessage(player, data);
             }
             server.getMessenger().dispatchIncomingMessage(player.getBukkitEntity(), channel, data);
         }

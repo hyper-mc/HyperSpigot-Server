@@ -1515,6 +1515,13 @@ public final class CraftServer implements Server {
     }
 
     @Override
+    public void sendPluginMessage(String channel, byte[] message) {
+        for (Player player : getOnlinePlayers()) {
+            player.sendPluginMessage(channel, message);
+        }
+    }
+
+    @Override
     public Set<String> getListeningPluginChannels() {
         Set<String> result = new HashSet<String>();
 

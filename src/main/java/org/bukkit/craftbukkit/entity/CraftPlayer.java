@@ -1051,6 +1051,16 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     }
 
     @Override
+    public void sendPluginMessage(String channel, byte[] message) {
+        if (getHandle().playerConnection == null) return;
+
+        if (channels.contains(channel)) {
+            PacketPlayOutCustomPayload packet = new PacketPlayOutCustomPayload(channel, new PacketDataSerializer(Unpooled.wrappedBuffer(message)));
+            getHandle().playerConnection.sendPacket(packet);
+        }
+    }
+
+    @Override
     public void setTexturePack(String url) {
         setResourcePack(url);
     }
@@ -1393,6 +1403,17 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     @Override
     public void deleteData(String key) {
         PlayerContainer.setData(this, key, null);
+    }
+
+    private String bungeeUUID = null;
+
+    public void setBungeeUUID(String bungeeUUID){
+        this.bungeeUUID = bungeeUUID;
+    }
+
+    @Override
+    public String getBungeeUUID() {
+        return bungeeUUID;
     }
 
     // Spigot start
