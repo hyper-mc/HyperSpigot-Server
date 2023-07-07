@@ -103,11 +103,8 @@ public class ServerConnection {
 
     public void b() {
         this.d = false;
-        Iterator iterator = this.g.iterator();
 
-        while (iterator.hasNext()) {
-            ChannelFuture channelfuture = (ChannelFuture) iterator.next();
-
+        for (ChannelFuture channelfuture : this.g) {
             try {
                 channelfuture.channel().close().sync();
             } catch (InterruptedException interruptedexception) {

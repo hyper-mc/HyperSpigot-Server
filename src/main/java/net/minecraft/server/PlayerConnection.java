@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+
+import net.hyper.mc.server.bungeecord.BungeeManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -2110,7 +2112,11 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
         } else {
             byte[] data = new byte[packetplayincustompayload.b().readableBytes()];
             packetplayincustompayload.b().readBytes(data);
-            server.getMessenger().dispatchIncomingMessage(player.getBukkitEntity(), packetplayincustompayload.a(), data);
+            String channel = packetplayincustompayload.a();
+            if(channel.equalsIgnoreCase("BungeeCord")){
+                BungeeManager.getInstance().pluginMessage(data);
+            }
+            server.getMessenger().dispatchIncomingMessage(player.getBukkitEntity(), channel, data);
         }
         // CraftBukkit end
         // CraftBukkit start

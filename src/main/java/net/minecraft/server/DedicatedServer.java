@@ -33,7 +33,7 @@ import org.spigotmc.SpigotConfig;
 public class DedicatedServer extends MinecraftServer implements IMinecraftServer {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final List<ServerCommand> l = Collections.synchronizedList(Lists.<ServerCommand>newArrayList()); // CraftBukkit - fix decompile error
+    private final List<ServerCommand> l = Collections.synchronizedList(Lists.newArrayList()); // CraftBukkit - fix decompile error
     private RemoteStatusListener m;
     private RemoteControlListener n;
     public PropertyManager propertyManager;
