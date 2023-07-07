@@ -3,6 +3,7 @@ package net.hyper.mc.server.player;
 import balbucio.sqlapi.model.ConditionValue;
 import balbucio.sqlapi.sqlite.SQLiteInstance;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
+import net.hyper.mc.server.CraftHyperSpigot;
 import net.minecraft.server.EntityPlayer;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Player;

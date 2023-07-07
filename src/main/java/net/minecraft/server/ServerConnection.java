@@ -49,7 +49,7 @@ public class ServerConnection {
         }
     };
     public static final LazyInitVar<LocalEventLoopGroup> c = new LazyInitVar() {
-        protected LocalEventLoopGroup a() {
+        private LocalEventLoopGroup a() {
             return new LocalEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Local Server IO #%d").setDaemon(true).build());
         }
 
@@ -59,8 +59,8 @@ public class ServerConnection {
     };
     private final MinecraftServer f;
     public volatile boolean d;
-    private final List<ChannelFuture> g = Collections.synchronizedList(Lists.<ChannelFuture>newArrayList());
-    private final List<NetworkManager> h = Collections.synchronizedList(Lists.<NetworkManager>newArrayList());
+    private final List<ChannelFuture> g = Collections.synchronizedList(Lists.newArrayList());
+    private final List<NetworkManager> h = Collections.synchronizedList(Lists.newArrayList());
 
     public ServerConnection(MinecraftServer minecraftserver) {
         this.f = minecraftserver;
@@ -68,7 +68,7 @@ public class ServerConnection {
     }
 
     public void a(InetAddress inetaddress, int i) throws IOException {
-        List list = this.g;
+        List<ChannelFuture> list = this.g;
 
         synchronized (this.g) {
             Class oclass;
@@ -168,7 +168,7 @@ public class ServerConnection {
                                 public void operationComplete(Future future) throws Exception {
                                     networkmanager.close(chatcomponenttext);
                                 }
-                            }, new GenericFutureListener[0]);
+                            });
                             networkmanager.k();
                         }
                     }

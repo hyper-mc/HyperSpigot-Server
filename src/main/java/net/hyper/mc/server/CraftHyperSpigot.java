@@ -1,4 +1,4 @@
-package net.hyper.mc.server.player;
+package net.hyper.mc.server;
 
 import lombok.Data;
 import lombok.Getter;

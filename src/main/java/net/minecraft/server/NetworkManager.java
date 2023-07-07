@@ -138,7 +138,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet> {
     public void handle(Packet packet) {
         if (this.g()) {
             this.m();
-            this.a(packet, (GenericFutureListener[]) null);
+            this.a(packet, null);
         } else {
             this.j.writeLock().lock();
 
@@ -154,12 +154,12 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet> {
     public void a(Packet packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener, GenericFutureListener<? extends Future<? super Void>>... agenericfuturelistener) {
         if (this.g()) {
             this.m();
-            this.a(packet, (GenericFutureListener[]) ArrayUtils.add(agenericfuturelistener, 0, genericfuturelistener));
+            this.a(packet, ArrayUtils.add(agenericfuturelistener, 0, genericfuturelistener));
         } else {
             this.j.writeLock().lock();
 
             try {
-                this.i.add(new NetworkManager.QueuedPacket(packet, (GenericFutureListener[]) ArrayUtils.add(agenericfuturelistener, 0, genericfuturelistener)));
+                this.i.add(new NetworkManager.QueuedPacket(packet, ArrayUtils.add(agenericfuturelistener, 0, genericfuturelistener)));
             } finally {
                 this.j.writeLock().unlock();
             }

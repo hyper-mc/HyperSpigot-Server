@@ -80,7 +80,7 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
     private static final AtomicIntegerFieldUpdater chatSpamField = AtomicIntegerFieldUpdater.newUpdater(PlayerConnection.class, "chatThrottle");
     // CraftBukkit end
     private int m;
-    private IntHashMap<Short> n = new IntHashMap();
+    private IntHashMap<Short> n = new IntHashMap<>();
     private double o;
     private double p;
     private double q;
@@ -179,7 +179,7 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
             public void operationComplete(Future future) throws Exception { // CraftBukkit - fix decompile error
                 PlayerConnection.this.networkManager.close(chatcomponenttext);
             }
-        }, new GenericFutureListener[0]);
+        });
         this.a(chatcomponenttext); // CraftBukkit - fire quit instantly
         this.networkManager.k();
         // CraftBukkit - Don't wait
@@ -240,7 +240,7 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
                 Location to = player.getLocation().clone(); // Start off the To location as the Players current location.
 
                 // If the packet contains movement information then we update the To location with the correct XYZ.
-                if (packetplayinflying.hasPos && !(packetplayinflying.hasPos && packetplayinflying.y == -999.0D)) {
+                if (packetplayinflying.hasPos && !(packetplayinflying.y == -999.0D)) {
                     to.setX(packetplayinflying.x);
                     to.setY(packetplayinflying.y);
                     to.setZ(packetplayinflying.z);
@@ -264,31 +264,30 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
                     this.lastPitch = to.getPitch();
 
                     // Skip the first time we do this
-                    if (true) { // Spigot - don't skip any move events
-                        Location oldTo = to.clone();
-                        PlayerMoveEvent event = new PlayerMoveEvent(player, from, to);
-                        this.server.getPluginManager().callEvent(event);
+                    // Spigot - don't skip any move events
+                    Location oldTo = to.clone();
+                    PlayerMoveEvent event = new PlayerMoveEvent(player, from, to);
+                    this.server.getPluginManager().callEvent(event);
 
-                        // If the event is cancelled we move the player back to their old location.
-                        if (event.isCancelled()) {
-                            this.player.playerConnection.sendPacket(new PacketPlayOutPosition(from.getX(), from.getY(), from.getZ(), from.getYaw(), from.getPitch(), Collections.<PacketPlayOutPosition.EnumPlayerTeleportFlags>emptySet()));
-                            return;
-                        }
+                    // If the event is cancelled we move the player back to their old location.
+                    if (event.isCancelled()) {
+                        this.player.playerConnection.sendPacket(new PacketPlayOutPosition(from.getX(), from.getY(), from.getZ(), from.getYaw(), from.getPitch(), Collections.<PacketPlayOutPosition.EnumPlayerTeleportFlags>emptySet()));
+                        return;
+                    }
 
                         /* If a Plugin has changed the To destination then we teleport the Player
                         there to avoid any 'Moved wrongly' or 'Moved too quickly' errors.
                         We only do this if the Event was not cancelled. */
-                        if (!oldTo.equals(event.getTo()) && !event.isCancelled()) {
-                            this.player.getBukkitEntity().teleport(event.getTo(), PlayerTeleportEvent.TeleportCause.UNKNOWN);
-                            return;
-                        }
+                    if (!oldTo.equals(event.getTo()) && !event.isCancelled()) {
+                        this.player.getBukkitEntity().teleport(event.getTo(), PlayerTeleportEvent.TeleportCause.UNKNOWN);
+                        return;
+                    }
 
                         /* Check to see if the Players Location has some how changed during the call of the event.
                         This can happen due to a plugin teleporting the player instead of using .setTo() */
-                        if (!from.equals(this.getPlayer().getLocation()) && this.justTeleported) {
-                            this.justTeleported = false;
-                            return;
-                        }
+                    if (!from.equals(this.getPlayer().getLocation()) && this.justTeleported) {
+                        this.justTeleported = false;
+                        return;
                     }
                 }
 
