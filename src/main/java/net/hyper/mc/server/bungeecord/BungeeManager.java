@@ -2,16 +2,20 @@ package net.hyper.mc.server.bungeecord;
 
 import net.hyper.mc.spigot.bungeecord.BungeeAction;
 import net.hyper.mc.spigot.bungeecord.IBungeeManager;
+import net.hyper.mc.spigot.player.FakePlayer;
 import net.hyper.mc.spigot.utils.PluginMessage;
 import net.minecraft.server.EntityPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Player;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BungeeManager implements IBungeeManager {
@@ -41,6 +45,26 @@ public class BungeeManager implements IBungeeManager {
     @Override
     public Map<String, Object> getServerInfo(String server) {
         return servers.getOrDefault(server, null);
+    }
+
+    @Override
+    public boolean hasPlayer(String name) {
+        AtomicBoolean has = new AtomicBoolean(false);
+        servers.forEach((s, i) -> {
+            String[] players = (String[]) i.get("playerList");
+            has.set(Arrays.asList(players).contains(name));
+        });
+        return has.get();
+    }
+
+    @Override
+    public void sendMessage(String name, String message) {
+        requestUpdate(BungeeAction.MESSAGE, new FakePlayer(name), message);
+    }
+
+    @Override
+    public void sendMessage(Player player, String message) {
+        requestUpdate(BungeeAction.MESSAGE, player, message);
     }
 
     public void pluginMessage(EntityPlayer player, byte[] data) {
@@ -130,12 +154,9 @@ public class BungeeManager implements IBungeeManager {
                 break;
             case PLAYER_LIST:
                 if (value != null) {
-                    msg = new PluginMessage("PlayerList").add((String) value);
-                    if (player != null) {
-                        player.sendPluginMessage("BungeeCord", msg.getBytes());
-                    } else {
-                        server.sendPluginMessage("BungeeCord", msg.getBytes());
-                    }
+                    sendPlayerList(player, (String) value);
+                } else{
+                    servers.keySet().forEach(s -> sendPlayerList(player, s));
                 }
                 break;
             case SERVER_LIST:
@@ -170,7 +191,20 @@ public class BungeeManager implements IBungeeManager {
                     player.sendPluginMessage("BungeeCord", msg.getBytes());
                 }
                 break;
+            case MESSAGE:
+                if(value != null) {
+                    msg = new PluginMessage("Message").add((String) value);
+                    server.sendPluginMessage("BungeeCord", msg.getBytes());
+                }
         }
     }
 
+    private void sendPlayerList(Player player, String server){
+        PluginMessage msg = new PluginMessage("PlayerList").add(server);
+        if (player != null) {
+            player.sendPluginMessage("BungeeCord", msg.getBytes());
+        } else {
+            this.server.sendPluginMessage("BungeeCord", msg.getBytes());
+        }
+    }
 }

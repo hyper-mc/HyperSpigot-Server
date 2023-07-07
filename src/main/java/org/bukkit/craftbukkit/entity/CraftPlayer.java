@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.hyper.mc.server.player.PlayerContainer;
+import net.hyper.mc.spigot.player.party.PartyPlayer;
 import net.md_5.bungee.api.chat.BaseComponent;
 
 import net.minecraft.server.*;
@@ -70,7 +71,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.json.JSONObject;
 
 @DelegateDeserialization(CraftOfflinePlayer.class)
-public class CraftPlayer extends CraftHumanEntity implements Player {
+public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer {
     private long firstPlayed = 0;
     private long lastPlayed = 0;
     private boolean hasPlayedBefore = false;
