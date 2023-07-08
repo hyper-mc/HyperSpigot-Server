@@ -2,7 +2,9 @@ package net.hyper.mc.server.player.party;
 
 import balbucio.sqlapi.model.ConditionValue;
 import balbucio.sqlapi.sqlite.SQLiteInstance;
+import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.bungeecord.BungeeManager;
+import net.hyper.mc.spigot.HyperSpigot;
 import net.hyper.mc.spigot.bungeecord.BungeeAction;
 import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyManager;
@@ -28,12 +30,15 @@ public class CraftPartyManager implements PartyManager {
     private CraftServer server;
     private SQLiteInstance sqlite;
     private CopyOnWriteArrayList<Party> parties = new CopyOnWriteArrayList<>();
+    private HyperMessageBroker messeger;
     public CraftPartyManager(CraftServer server){
         instance = this;
         this.server = server;
         this.sqlite = server.getSQLiteInstance();
         Bukkit.registerCommand(PartyCommand.class);
-        this.server.getHyperSpigot().getMessenger().registerConsumer("party", m -> {
+        messeger = server.getHyperSpigot().getMessenger();
+        messeger.sendMessage("party", new JSONObject().put("channel", "register").toString());
+        messeger.registerConsumer("party", m -> {
             JSONObject payload = new JSONObject((String) m.getValue());
             String channel = payload.getString("channel");
             if(channel.equalsIgnoreCase("create")){

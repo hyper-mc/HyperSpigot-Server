@@ -28,7 +28,14 @@ public class CraftHyperSpigot implements HyperSpigot {
     public CraftHyperSpigot(CraftServer server) {
         this.server = server;
         createAndLoadFiles();
-        configureMessageBroker();
+    }
+    public void loadAndConfigure(){
+        if(configuration.getBoolean("hypermessagebroker.active")){
+            this.messageBroker = new HyperMessageBroker(
+                    configuration.getString("hypermessagebroker.ip"),
+                    configuration.getInt("hypermessagebroker.port"),
+                    server.getResponsiveScheduler());
+        }
         if(configuration.getBoolean("party.active") && configuration.getBoolean("hypermessagebroker.active")){
             this.partyManager = new CraftPartyManager(server);
         }
@@ -42,15 +49,6 @@ public class CraftHyperSpigot implements HyperSpigot {
             configuration = YamlConfiguration.loadConfiguration(configFile);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private void configureMessageBroker(){
-        if(configuration.getBoolean("hypermessagebroker.active")){
-            messageBroker = new HyperMessageBroker(
-                    configuration.getString("hypermessagebroker.ip"),
-                    configuration.getInt("hypermessagebroker.port"),
-                    server.getResponsiveScheduler());
         }
     }
 

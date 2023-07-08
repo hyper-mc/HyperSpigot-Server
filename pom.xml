@@ -84,7 +84,8 @@
         <dependency>
             <groupId>com.github.hyper-mc</groupId>
             <artifactId>HyperMessageBroker-API</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
