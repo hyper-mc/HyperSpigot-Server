@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import net.hyper.mc.server.CraftHyperSpigot;
+import net.hyper.mc.server.event.EventHandler;
 import net.hyper.mc.server.player.PlayerContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -299,6 +301,7 @@ public abstract class PlayerList {
         // CraftBukkit start
         PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(cserver.getPlayer(entityplayer), joinMessage);
         cserver.getPluginManager().callEvent(playerJoinEvent);
+        EventHandler.onJoin(playerJoinEvent);
 
         joinMessage = playerJoinEvent.getJoinMessage();
 

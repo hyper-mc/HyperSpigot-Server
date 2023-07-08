@@ -21,6 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.hyper.mc.server.player.PlayerContainer;
+import net.hyper.mc.server.player.party.CraftPartyManager;
+import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyPlayer;
 import net.md_5.bungee.api.chat.BaseComponent;
 
@@ -1415,6 +1417,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
     @Override
     public String getBungeeUUID() {
         return bungeeUUID;
+    }
+
+    @Override
+    public Party getParty() {
+        return CraftPartyManager.getInstance().getParty(this);
     }
 
     // Spigot start

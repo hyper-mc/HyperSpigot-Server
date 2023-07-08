@@ -8,6 +8,8 @@ import net.hyper.mc.spigot.HyperSpigot;
 import net.hyper.mc.spigot.bungeecord.BungeeAction;
 import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyManager;
+import net.hyper.mc.spigot.player.party.PartyPlayer;
+import net.hyper.mc.spigot.player.party.PartyRole;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -31,7 +33,8 @@ public class CraftPartyManager implements PartyManager {
     private SQLiteInstance sqlite;
     private CopyOnWriteArrayList<Party> parties = new CopyOnWriteArrayList<>();
     private HyperMessageBroker messeger;
-    public CraftPartyManager(CraftServer server){
+
+    public CraftPartyManager(CraftServer server) {
         instance = this;
         this.server = server;
         this.sqlite = server.getSQLiteInstance();
@@ -41,26 +44,26 @@ public class CraftPartyManager implements PartyManager {
         messeger.registerConsumer("party", m -> {
             JSONObject payload = new JSONObject((String) m.getValue());
             String channel = payload.getString("channel");
-            if(channel.equalsIgnoreCase("create")){
+            if (channel.equalsIgnoreCase("create")) {
                 JSONObject data = payload.getJSONObject("data");
                 Party party = Party.getPartyFromJson(data);
                 parties.add(party);
-            } else if(channel.equalsIgnoreCase("invite")){
+            } else if (channel.equalsIgnoreCase("invite")) {
                 Player target = Bukkit.getPlayer(payload.getString("target"));
-                if(target != null){
+                if (target != null) {
                     target.sendMessage("");
-                    target.sendMessage("§d O jogador §f"+payload.getString("")+"§d te convidou para uma party.");
-                    TextComponent component = new TextComponent("§a§lClique aqui §dpara aceitar ou ignore para negar!" );
-                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party aceitar #"+payload.getString("party")));
+                    target.sendMessage("§d O jogador §f" + payload.getString("") + "§d te convidou para uma party.");
+                    TextComponent component = new TextComponent("§a§lClique aqui §dpara aceitar ou ignore para negar!");
+                    component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party aceitar #" + payload.getString("party")));
                     target.spigot().sendMessage(component);
                     target.sendMessage("");
                     target.playSound(target.getLocation(), Sound.VILLAGER_YES, 2, 2);
                 }
-            } else if(channel.equalsIgnoreCase("update")){
+            } else if (channel.equalsIgnoreCase("update")) {
                 parties.stream()
                         .filter(p -> p.getId().equalsIgnoreCase(payload.getJSONObject("data").getString("id")))
                         .findFirst().ifPresent(p -> p.update(payload.getJSONObject("data")));
-            } else if(channel.equalsIgnoreCase("delete")){
+            } else if (channel.equalsIgnoreCase("delete")) {
                 parties.stream()
                         .filter(p -> p.getId().equalsIgnoreCase(payload.getString("id")))
                         .forEach(p -> parties.remove(p));
@@ -68,23 +71,23 @@ public class CraftPartyManager implements PartyManager {
         });
     }
 
-    public Party getParty(Player player){
+    public Party getParty(Player player) {
         return parties.stream()
                 .filter(p -> p.getMembers().containsKey(player) && p.getOwner() == player)
                 .findFirst().orElse(null);
     }
 
-    public Party getPartyByID(String id){
+    public Party getPartyByID(String id) {
         return parties.stream().filter(p -> p.getId().equalsIgnoreCase(id.replace("#", ""))).findFirst().orElse(null);
     }
 
-    public Party getPartyByMemberName(String name){
+    public Party getPartyByMemberName(String name) {
         return parties.stream()
                 .filter(p -> p.getOwner().getName().equalsIgnoreCase(name) || p.getMembers().keySet().stream().anyMatch(m -> m.getName().equalsIgnoreCase(name)))
                 .findFirst().orElse(null);
     }
 
-    public Party createParty(Player owner){
+    public Party createParty(Player owner) {
         Party party = new Party(owner);
         JSONObject packet = new JSONObject();
         packet.put("channel", "create");
@@ -94,35 +97,35 @@ public class CraftPartyManager implements PartyManager {
         return party;
     }
 
-    public void accept(Player player, String arg){
+    public void accept(Player player, String arg) {
         Party party;
-        if(arg.contains("#")){
+        if (arg.contains("#")) {
             party = getPartyByID(arg);
         } else {
             party = getPartyByMemberName(arg);
         }
 
-        if(party == null){
+        if (party == null) {
             player.sendMessage("§cA party referenciada não existe!");
             return;
         }
 
-        if(party.hasMember(player)){
+        if (party.hasMember(player)) {
             player.sendMessage("§cVocê já está nesta party!");
             return;
         }
 
-        if(party.getConvites().containsKey(player.getName()) || party.isOpen()){
+        if (party.getConvites().containsKey(player.getName()) || party.isOpen()) {
             long time = party.getConvites().get(player.getName());
-            if(time <= Calendar.getInstance().getTimeInMillis() && !party.isOpen()){
+            if (time <= Calendar.getInstance().getTimeInMillis() && !party.isOpen()) {
                 player.sendMessage("§cO seu convite para entrar na party expirou!");
                 return;
             }
 
             party.addMember(player);
-            player.sendMessage("§aVocê entrou na party: §b"+party.getName());
-            Bukkit.sendMessage((Player) party.getOwner(), "§aO §7"+player.getDisplayName()+" §aaceitou o convite e entrou na party.");
-            party.broadcast("§aO §7"+player.getDisplayName()+"§a entrou na party.", false);
+            player.sendMessage("§aVocê entrou na party: §b" + party.getName());
+            Bukkit.sendMessage((Player) party.getOwner(), "§aO §7" + player.getDisplayName() + " §aaceitou o convite e entrou na party.");
+            party.broadcast("§aO §7" + player.getDisplayName() + "§a entrou na party.", false);
             messeger.sendMessage("party", new JSONObject()
                     .put("channel", "update")
                     .put("data", party.getPartyJson())
@@ -130,18 +133,18 @@ public class CraftPartyManager implements PartyManager {
         }
     }
 
-    public void inviteToParty(Player player, String targetName, Party party){
+    public void inviteToParty(Player player, String targetName, Party party) {
         party.addConvite(targetName);
         Player target = Bukkit.getPlayer(targetName);
-        if(target != null){
+        if (target != null) {
             target.sendMessage("");
-            target.sendMessage("§d O jogador §f"+player.getDisplayName()+"§d te convidou para uma party.");
-            TextComponent component = new TextComponent("§a§lClique aqui §dpara aceitar ou ignore para negar!" );
-            component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party aceitar "+party.getOwner().getName()));
+            target.sendMessage("§d O jogador §f" + player.getDisplayName() + "§d te convidou para uma party.");
+            TextComponent component = new TextComponent("§a§lClique aqui §dpara aceitar ou ignore para negar!");
+            component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party aceitar " + party.getOwner().getName()));
             target.spigot().sendMessage(component);
             target.sendMessage("");
             target.playSound(target.getLocation(), Sound.VILLAGER_YES, 2, 2);
-        } else{
+        } else {
             messeger.sendMessage("party", new JSONObject()
                     .put("channel", "update")
                     .put("data", party.getPartyJson())
@@ -157,10 +160,10 @@ public class CraftPartyManager implements PartyManager {
         player.sendMessage("§aO jogador foi convidado!");
     }
 
-    public void delete(Player player){
+    public void delete(Player player) {
         Party party = getParty(player);
-        if(party != null){
-            if(!party.getOwner().getName().equalsIgnoreCase(player.getName())){
+        if (party != null) {
+            if (!party.getOwner().getName().equalsIgnoreCase(player.getName())) {
                 player.sendMessage("§cSomente o dono pode deletar a party!");
                 return;
             }
@@ -169,49 +172,74 @@ public class CraftPartyManager implements PartyManager {
                     .put("channel", "delete")
                     .put("id", party.getId())
                     .toString());
-        } else{
+        } else {
             player.sendMessage("§cVocê não tem uma party!");
         }
     }
 
-    public void rename(Player player, String name){
+    public void rename(Player player, String name) {
         Party party = getParty(player);
-        if(party != null){
-            if(!party.getOwner().getName().equalsIgnoreCase(player.getName())){
+        if (party != null) {
+            if (!party.getOwner().getName().equalsIgnoreCase(player.getName())) {
                 player.sendMessage("§cSomente o dono pode renomear a party!");
                 return;
             }
             party.setName(name.replace("&", "§"));
-            party.broadcast("§aA party foi renomeada para: §7"+name.replace("&", "§"), false);
+            party.broadcast("§aA party foi renomeada para: §7" + name.replace("&", "§"), false);
             messeger.sendMessage("party", new JSONObject()
                     .put("channel", "update")
                     .put("data", party.getPartyJson())
                     .toString());
             player.sendMessage("§aA party foi renomeada!");
-        } else{
+        } else {
             player.sendMessage("§cVocê não tem uma party!");
         }
     }
 
-    public void showInfo(Player player){
+    public void showInfo(Player player) {
         Party party = getParty(player);
-        if(party == null){
+        if (party == null) {
             player.sendMessage("§aCrie uma party enviando um convite para alguém!");
             player.sendMessage("§aEnvie um convite usando: §7/party <nickname>");
         }
     }
 
-    public void leave(Player player){
+    public void leave(Player player) {
         Party party = getParty(player);
-        if(party != null){
+        if (party != null) {
             party.getMembers().remove(player);
-            party.broadcast("§cO "+player.getName()+" saiu da party.", true);
+            party.broadcast("§cO " + player.getName() + " saiu da party.", true);
             messeger.sendMessage("party", new JSONObject()
                     .put("channel", "update")
                     .put("data", party.getPartyJson())
                     .toString());
-        } else{
+        } else {
             player.sendMessage("§cVocê não está numa party.");
+        }
+    }
+
+    public void transferir(Player player, String name) {
+        Party party = getParty(player);
+        if (party != null) {
+            if (!party.getOwner().getName().equalsIgnoreCase(player.getName())) {
+                player.sendMessage("§cSomente o dono pode renomear a party!");
+                return;
+            }
+            PartyPlayer oldOwner = party.getOwner();
+
+            PartyPlayer pp = party.getMembers().keySet().stream()
+                    .filter(p -> p.getName().equalsIgnoreCase(name))
+                    .findFirst().orElse(null);
+
+            if(pp != null){
+                party.setOwner(pp);
+                party.getMembers().remove(pp);
+                party.getMembers().put(oldOwner, PartyRole.MEMBER);
+                messeger.sendMessage("party", new JSONObject()
+                        .put("channel", "update")
+                        .put("data", party.getPartyJson())
+                        .toString());
+            }
         }
     }
 }
