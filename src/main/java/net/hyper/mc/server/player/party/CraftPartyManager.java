@@ -57,9 +57,13 @@ public class CraftPartyManager implements PartyManager {
                     target.playSound(target.getLocation(), Sound.VILLAGER_YES, 2, 2);
                 }
             } else if(channel.equalsIgnoreCase("update")){
-
+                parties.stream()
+                        .filter(p -> p.getId().equalsIgnoreCase(payload.getJSONObject("data").getString("id")))
+                        .findFirst().ifPresent(p -> p.update(payload.getJSONObject("data")));
             } else if(channel.equalsIgnoreCase("delete")){
-                parties.stream().filter(p -> p.getId().equalsIgnoreCase(payload.getString("id"))).forEach(p -> parties.remove(p));
+                parties.stream()
+                        .filter(p -> p.getId().equalsIgnoreCase(payload.getString("id")))
+                        .forEach(p -> parties.remove(p));
             }
         });
     }
@@ -85,7 +89,7 @@ public class CraftPartyManager implements PartyManager {
         JSONObject packet = new JSONObject();
         packet.put("channel", "create");
         packet.put("data", party.getPartyJson().toString());
-        this.server.getHyperSpigot().getMessenger().sendMessage("party", packet);
+        messeger.sendMessage("party", packet);
         parties.add(party);
         return party;
     }
@@ -119,7 +123,7 @@ public class CraftPartyManager implements PartyManager {
             player.sendMessage("§aVocê entrou na party: §b"+party.getName());
             Bukkit.sendMessage((Player) party.getOwner(), "§aO §7"+player.getDisplayName()+" §aaceitou o convite e entrou na party.");
             party.broadcast("§aO §7"+player.getDisplayName()+"§a entrou na party.");
-            this.server.getHyperSpigot().getMessenger().sendMessage("party", new JSONObject()
+            messeger.sendMessage("party", new JSONObject()
                     .put("channel", "update")
                     .put("data", party.getPartyJson())
                     .toString());
@@ -138,11 +142,11 @@ public class CraftPartyManager implements PartyManager {
             target.sendMessage("");
             target.playSound(target.getLocation(), Sound.VILLAGER_YES, 2, 2);
         } else{
-            this.server.getHyperSpigot().getMessenger().sendMessage("party", new JSONObject()
+            messeger.sendMessage("party", new JSONObject()
                     .put("channel", "update")
                     .put("data", party.getPartyJson())
                     .toString());
-            this.server.getHyperSpigot().getMessenger().sendMessage("party",
+            messeger.sendMessage("party",
                     new JSONObject()
                             .put("channel", "invite")
                             .put("name", player.getDisplayName())
@@ -156,15 +160,34 @@ public class CraftPartyManager implements PartyManager {
     public void delete(Player player){
         Party party = getParty(player);
         if(party != null){
-            if(party.getOwner().getName().equalsIgnoreCase(player.getName())){
+            if(!party.getOwner().getName().equalsIgnoreCase(player.getName())){
                 player.sendMessage("§cSomente o dono pode deletar a party!");
                 return;
             }
             party.broadcast("§cO dono deletou a party.");
-            this.server.getHyperSpigot().getMessenger().sendMessage("party", new JSONObject()
+            messeger.sendMessage("party", new JSONObject()
                     .put("channel", "delete")
                     .put("id", party.getId())
                     .toString());
+        } else{
+            player.sendMessage("§cVocê não tem uma party!");
+        }
+    }
+
+    public void rename(Player player, String name){
+        Party party = getParty(player);
+        if(party != null){
+            if(!party.getOwner().getName().equalsIgnoreCase(player.getName())){
+                player.sendMessage("§cSomente o dono pode renomear a party!");
+                return;
+            }
+            party.setName(name.replace("&", "§"));
+            party.broadcast("§aA party foi renomeada para: §7"+name.replace("&", "§"));
+            messeger.sendMessage("party", new JSONObject()
+                    .put("channel", "update")
+                    .put("data", party.getPartyJson())
+                    .toString());
+            player.sendMessage("§aA party foi renomeada!");
         } else{
             player.sendMessage("§cVocê não tem uma party!");
         }

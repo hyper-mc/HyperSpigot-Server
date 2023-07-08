@@ -52,6 +52,10 @@ public class PartyCommand {
 
     @Command(names = {"party transferir"}, permission = "spigot.party", playerOnly = true)
     public void transferir(Player player){
+    }
 
+    @Command(names = {"party rename"}, permission = "spigot.party", playerOnly = true)
+    public void rename(Player player, @Param(name = "newName", required = false) String newName){
+        CraftPartyManager.getInstance().rename(player, newName)
     }
 }
