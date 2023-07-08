@@ -122,7 +122,7 @@ public class CraftPartyManager implements PartyManager {
             party.addMember(player);
             player.sendMessage("§aVocê entrou na party: §b"+party.getName());
             Bukkit.sendMessage((Player) party.getOwner(), "§aO §7"+player.getDisplayName()+" §aaceitou o convite e entrou na party.");
-            party.broadcast("§aO §7"+player.getDisplayName()+"§a entrou na party.");
+            party.broadcast("§aO §7"+player.getDisplayName()+"§a entrou na party.", false);
             messeger.sendMessage("party", new JSONObject()
                     .put("channel", "update")
                     .put("data", party.getPartyJson())
@@ -164,7 +164,7 @@ public class CraftPartyManager implements PartyManager {
                 player.sendMessage("§cSomente o dono pode deletar a party!");
                 return;
             }
-            party.broadcast("§cO dono deletou a party.");
+            party.broadcast("§cO dono deletou a party.", false);
             messeger.sendMessage("party", new JSONObject()
                     .put("channel", "delete")
                     .put("id", party.getId())
@@ -182,7 +182,7 @@ public class CraftPartyManager implements PartyManager {
                 return;
             }
             party.setName(name.replace("&", "§"));
-            party.broadcast("§aA party foi renomeada para: §7"+name.replace("&", "§"));
+            party.broadcast("§aA party foi renomeada para: §7"+name.replace("&", "§"), false);
             messeger.sendMessage("party", new JSONObject()
                     .put("channel", "update")
                     .put("data", party.getPartyJson())
@@ -190,6 +190,28 @@ public class CraftPartyManager implements PartyManager {
             player.sendMessage("§aA party foi renomeada!");
         } else{
             player.sendMessage("§cVocê não tem uma party!");
+        }
+    }
+
+    public void showInfo(Player player){
+        Party party = getParty(player);
+        if(party == null){
+            player.sendMessage("§aCrie uma party enviando um convite para alguém!");
+            player.sendMessage("§aEnvie um convite usando: §7/party <nickname>");
+        }
+    }
+
+    public void leave(Player player){
+        Party party = getParty(player);
+        if(party != null){
+            party.getMembers().remove(player);
+            party.broadcast("§cO "+player.getName()+" saiu da party.", true);
+            messeger.sendMessage("party", new JSONObject()
+                    .put("channel", "update")
+                    .put("data", party.getPartyJson())
+                    .toString());
+        } else{
+            player.sendMessage("§cVocê não está numa party.");
         }
     }
 }
