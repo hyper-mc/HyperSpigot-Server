@@ -242,4 +242,17 @@ public class CraftPartyManager implements PartyManager {
             }
         }
     }
+
+    public void replace(Player player){
+        parties.forEach(p -> {
+            if(p.getOwner().getName().equalsIgnoreCase(player.getName())){
+                p.setOwner(player);
+            }
+            p.getMembers().keySet().stream().filter(ap -> ap.getName().equalsIgnoreCase(player.getName())).forEach(ap -> {
+                PartyRole role = p.getMembers().get(ap);
+                p.getMembers().remove(ap);
+                p.getMembers().put(player, role);
+            });
+        });
+    }
 }
