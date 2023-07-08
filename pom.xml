@@ -37,7 +37,7 @@
         <dependency>
             <groupId>net.hyper.mc</groupId>
             <artifactId>HyperSpigot-API</artifactId>
-            <version>1.0.1-MC1.8.8</version>
+            <version>1.0.2-MC1.8.8</version>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -106,6 +106,24 @@
             <artifactId>hamcrest-library</artifactId>
             <version>2.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.avaje</groupId>
+            <artifactId>ebean</artifactId>
+            <version>2.8.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>2.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
