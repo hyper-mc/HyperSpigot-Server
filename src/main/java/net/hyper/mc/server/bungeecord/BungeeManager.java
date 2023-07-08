@@ -49,6 +49,9 @@ public class BungeeManager implements IBungeeManager {
 
     @Override
     public boolean hasPlayer(String name) {
+        requestUpdate(BungeeAction.SERVER_LIST, null, null);
+        requestUpdate(BungeeAction.PLAYER_LIST, null, null);
+        requestUpdate(BungeeAction.PLAYER_COUNT, null, null);
         AtomicBoolean has = new AtomicBoolean(false);
         servers.forEach((s, i) -> {
             String[] players = (String[]) i.get("playerList");
@@ -144,12 +147,9 @@ public class BungeeManager implements IBungeeManager {
                 break;
             case PLAYER_COUNT:
                 if (value != null) {
-                    msg = new PluginMessage("PlayerCount").add((String) value);
-                    if (player != null) {
-                        player.sendPluginMessage("BungeeCord", msg.getBytes());
-                    } else {
-                        server.sendPluginMessage("BungeeCord", msg.getBytes());
-                    }
+                    sendPlayerCount(player, (String) value);
+                } else{
+                    servers.keySet().forEach(s -> sendPlayerCount(player, s));
                 }
                 break;
             case PLAYER_LIST:
@@ -174,12 +174,9 @@ public class BungeeManager implements IBungeeManager {
                 break;
             case SERVER_IP:
                 if (value != null) {
-                    msg = new PluginMessage("ServerIP").add((String) value);
-                    if (player != null) {
-                        player.sendPluginMessage("BungeeCord", msg.getBytes());
-                    } else {
-                        server.sendPluginMessage("BungeeCord", msg.getBytes());
-                    }
+                    sendServerIP(player, (String) value);
+                } else{
+                    servers.keySet().forEach(s -> sendServerIP(player, (String) value));
                 }
                 break;
             case KICK_PLAYER:
@@ -201,6 +198,24 @@ public class BungeeManager implements IBungeeManager {
 
     private void sendPlayerList(Player player, String server){
         PluginMessage msg = new PluginMessage("PlayerList").add(server);
+        if (player != null) {
+            player.sendPluginMessage("BungeeCord", msg.getBytes());
+        } else {
+            this.server.sendPluginMessage("BungeeCord", msg.getBytes());
+        }
+    }
+
+    private void sendServerIP(Player player, String server){
+        PluginMessage msg = new PluginMessage("ServerIP").add(server);
+        if (player != null) {
+            player.sendPluginMessage("BungeeCord", msg.getBytes());
+        } else {
+            this.server.sendPluginMessage("BungeeCord", msg.getBytes());
+        }
+    }
+
+    private void sendPlayerCount(Player player, String server){
+        PluginMessage msg = new PluginMessage("PlayerCount").add(server);
         if (player != null) {
             player.sendPluginMessage("BungeeCord", msg.getBytes());
         } else {
