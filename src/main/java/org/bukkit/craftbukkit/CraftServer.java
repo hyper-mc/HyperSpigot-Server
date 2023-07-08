@@ -1730,6 +1730,11 @@ public final class CraftServer implements Server {
         return sqLiteInstance;
     }
 
+    @Override
+    public String getMinecraftServer() {
+        return "1.8.8";
+    }
+
     private final Spigot spigot = new Spigot()
     {
 
