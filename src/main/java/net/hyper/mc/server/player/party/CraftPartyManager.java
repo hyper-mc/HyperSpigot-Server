@@ -134,30 +134,34 @@ public class CraftPartyManager implements PartyManager {
     }
 
     public void inviteToParty(Player player, String targetName, Party party) {
-        party.addConvite(targetName);
-        Player target = Bukkit.getPlayer(targetName);
-        if (target != null) {
-            target.sendMessage("");
-            target.sendMessage("§d O jogador §f" + player.getDisplayName() + "§d te convidou para uma party.");
-            TextComponent component = new TextComponent("§a§lClique aqui §dpara aceitar ou ignore para negar!");
-            component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party aceitar " + party.getOwner().getName()));
-            target.spigot().sendMessage(component);
-            target.sendMessage("");
-            target.playSound(target.getLocation(), Sound.VILLAGER_YES, 2, 2);
-        } else {
-            messeger.sendMessage("party", new JSONObject()
-                    .put("channel", "update")
-                    .put("data", party.getPartyJson())
-                    .toString());
-            messeger.sendMessage("party",
-                    new JSONObject()
-                            .put("channel", "invite")
-                            .put("name", player.getDisplayName())
-                            .put("target", targetName)
-                            .put("party", party.getId())
-                            .toString());
+        if(Bukkit.getPlayer(targetName) != null || BungeeManager.getInstance().hasPlayer(targetName)) {
+            party.addConvite(targetName);
+            Player target = Bukkit.getPlayer(targetName);
+            if (target != null) {
+                target.sendMessage("");
+                target.sendMessage("§d O jogador §f" + player.getDisplayName() + "§d te convidou para uma party.");
+                TextComponent component = new TextComponent("§a§lClique aqui §dpara aceitar ou ignore para negar!");
+                component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/party aceitar " + party.getOwner().getName()));
+                target.spigot().sendMessage(component);
+                target.sendMessage("");
+                target.playSound(target.getLocation(), Sound.VILLAGER_YES, 2, 2);
+            } else {
+                messeger.sendMessage("party", new JSONObject()
+                        .put("channel", "update")
+                        .put("data", party.getPartyJson())
+                        .toString());
+                messeger.sendMessage("party",
+                        new JSONObject()
+                                .put("channel", "invite")
+                                .put("name", player.getDisplayName())
+                                .put("target", targetName)
+                                .put("party", party.getId())
+                                .toString());
+            }
+            player.sendMessage("§aO jogador foi convidado!");
+        } else{
+            player.sendMessage("O player não está online ou este comando não existe!");
         }
-        player.sendMessage("§aO jogador foi convidado!");
     }
 
     public void delete(Player player) {

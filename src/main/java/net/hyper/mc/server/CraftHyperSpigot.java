@@ -4,9 +4,11 @@ import lombok.Data;
 import lombok.Getter;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.bungeecord.BungeeManager;
+import net.hyper.mc.server.player.PlayerContainer;
 import net.hyper.mc.server.player.party.CraftPartyManager;
 import net.hyper.mc.spigot.HyperSpigot;
 import net.hyper.mc.spigot.bungeecord.IBungeeManager;
+import net.hyper.mc.spigot.player.FakePlayer;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.CraftServer;
@@ -60,5 +62,10 @@ public class CraftHyperSpigot implements HyperSpigot {
     @Override
     public IBungeeManager getBungeeManager() {
         return bungeeManager;
+    }
+
+    @Override
+    public void setData(String name, String key, Object value) {
+        PlayerContainer.setData(new FakePlayer(name), key, value);
     }
 }

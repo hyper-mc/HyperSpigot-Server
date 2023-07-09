@@ -23,9 +23,7 @@ public class PartyCommand {
                 if (role == PartyRole.OWNER || role == PartyRole.MANAGER) {
                     BungeeManager.getInstance().requestUpdate(BungeeAction.SERVER_LIST, null, null);
                     BungeeManager.getInstance().requestUpdate(BungeeAction.PLAYER_LIST, null, null);
-                    if (Bukkit.getPlayer(target) != null || BungeeManager.getInstance().hasPlayer(target)) {
-                        CraftPartyManager.getInstance().inviteToParty(player, target, party);
-                    }
+                    CraftPartyManager.getInstance().inviteToParty(player, target, party);
                 }
             } else {
                 party = CraftPartyManager.getInstance().createParty(player);
