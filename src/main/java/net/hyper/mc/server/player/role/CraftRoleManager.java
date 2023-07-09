@@ -7,7 +7,10 @@ import net.hyper.mc.spigot.player.role.RoleManager;
 import org.bukkit.entity.Player;
 import org.json.JSONObject;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class CraftRoleManager implements RoleManager {
 
@@ -33,8 +36,9 @@ public class CraftRoleManager implements RoleManager {
     @Override
     public Role getRole(Player player) {
         Role role;
-        role = roles.values().stream()
-                .filter(r -> player.hasPermission(r.getPermission())).findFirst().orElse(getDefault());
+        role = findMostImportant(roles.values().stream()
+                .filter(r -> player.hasPermission(r.getPermission()))
+                .collect(Collectors.toList()));
         return role;
     }
 
@@ -43,5 +47,9 @@ public class CraftRoleManager implements RoleManager {
         Role role;
         role = roles.values().stream().filter(r -> r.getOrder() == (roles.size()+1)).findFirst().orElse(null);
         return role;
+    }
+
+    private Role findMostImportant(List<Role> role){
+        return role.stream().min(Comparator.comparingInt(Role::getOrder)).orElse(null);
     }
 }

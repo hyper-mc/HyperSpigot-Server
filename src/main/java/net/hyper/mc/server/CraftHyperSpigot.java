@@ -7,9 +7,13 @@ import net.hyper.mc.server.bungeecord.BungeeManager;
 import net.hyper.mc.server.player.PlayerContainer;
 import net.hyper.mc.server.player.party.CraftPartyManager;
 import net.hyper.mc.server.player.role.CraftRoleManager;
+import net.hyper.mc.server.player.scoreboard.CraftBoardManager;
 import net.hyper.mc.spigot.HyperSpigot;
 import net.hyper.mc.spigot.bungeecord.IBungeeManager;
 import net.hyper.mc.spigot.player.FakePlayer;
+import net.hyper.mc.spigot.player.scoreboard.BoardManager;
+import net.hyper.mc.spigot.player.scoreboard.settings.BoardSettings;
+import net.hyper.mc.spigot.player.scoreboard.settings.ScoreDirection;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.CraftServer;
@@ -43,6 +47,7 @@ public class CraftHyperSpigot implements HyperSpigot {
         if(configuration.getBoolean("party.active") && configuration.getBoolean("hypermessagebroker.active")){
             this.partyManager = new CraftPartyManager(server);
         }
+        roleManager = new CraftRoleManager(messageBroker);
     }
 
     private void createAndLoadFiles() {
@@ -64,6 +69,15 @@ public class CraftHyperSpigot implements HyperSpigot {
     @Override
     public IBungeeManager getBungeeManager() {
         return bungeeManager;
+    }
+
+    public CraftRoleManager getRoleManager() {
+        return roleManager;
+    }
+
+    @Override
+    public BoardManager createBoardManager(BoardSettings settings) {
+        return new CraftBoardManager(settings, this);
     }
 
     @Override

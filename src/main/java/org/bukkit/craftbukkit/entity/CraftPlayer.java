@@ -91,6 +91,9 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
         super(server, entity);
 
         firstPlayed = System.currentTimeMillis();
+        String role = getRole() != null ? getRole().getFormmatedTag(this.getName()) : "";
+        getHandle().displayName = role + this.getName();
+        getHandle().listName =  CraftChatMessage.fromString(role + this.getName())[0];
     }
 
     public GameProfile getProfile() {
@@ -173,6 +176,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
 
     @Override
     public String getDisplayName() {
+
         return getHandle().displayName;
     }
 
