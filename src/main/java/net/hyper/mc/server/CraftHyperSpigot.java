@@ -6,6 +6,7 @@ import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.bungeecord.BungeeManager;
 import net.hyper.mc.server.player.PlayerContainer;
 import net.hyper.mc.server.player.party.CraftPartyManager;
+import net.hyper.mc.server.player.role.CraftRoleManager;
 import net.hyper.mc.spigot.HyperSpigot;
 import net.hyper.mc.spigot.bungeecord.IBungeeManager;
 import net.hyper.mc.spigot.player.FakePlayer;
@@ -25,6 +26,7 @@ public class CraftHyperSpigot implements HyperSpigot {
     private HyperMessageBroker messageBroker;
     private BungeeManager bungeeManager;
     private CraftPartyManager partyManager;
+    private CraftRoleManager roleManager;
     private CraftServer server;
 
     public CraftHyperSpigot(CraftServer server) {

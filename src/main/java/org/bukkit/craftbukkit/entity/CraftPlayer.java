@@ -22,8 +22,10 @@ import java.util.logging.Logger;
 
 import net.hyper.mc.server.player.PlayerContainer;
 import net.hyper.mc.server.player.party.CraftPartyManager;
+import net.hyper.mc.server.player.role.CraftRoleManager;
 import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyPlayer;
+import net.hyper.mc.spigot.player.role.Role;
 import net.md_5.bungee.api.chat.BaseComponent;
 
 import net.minecraft.server.*;
@@ -1422,6 +1424,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
     @Override
     public Party getParty() {
         return CraftPartyManager.getInstance().getParty(this);
+    }
+
+    @Override
+    public Role getRole() {
+        return CraftRoleManager.getInstance().getRole(this);
     }
 
     // Spigot start
