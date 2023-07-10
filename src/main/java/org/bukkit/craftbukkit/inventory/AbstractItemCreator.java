@@ -3,37 +3,49 @@ package org.bukkit.craftbukkit.inventory;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import net.minecraft.server.ItemCarrotStick;
+import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.inventory.AbstractItemCreator;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemCreator;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.material.MaterialData;
+import org.bukkit.potion.PotionEffect;
 
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
-public class ItemCreator extends AbstractItemCreator {
-    public ItemCreator(ItemStack item) {
+public class AbstractItemCreator extends ItemCreator {
+
+    public AbstractItemCreator(ItemStack item) {
         super(item);
     }
 
-    public ItemCreator(Material mat) {
+    public AbstractItemCreator(Material mat) {
         super(mat);
     }
 
-    public ItemCreator(Material mat, int amount) {
+    public AbstractItemCreator(Material mat, int amount) {
         super(mat, amount);
     }
 
-    public ItemCreator(Material mat, byte data) {
+    public AbstractItemCreator(Material mat, byte data) {
         super(mat, data);
     }
 
-    public ItemCreator(Material mat, byte data, int amount) {
+    public AbstractItemCreator(Material mat, byte data, int amount) {
         super(mat, data, amount);
     }
 
     @Override
-    public AbstractItemCreator withTexture(String url) throws NoSuchFieldException, IllegalAccessException {
+    public ItemCreator withTexture(String url) {
         if (!this.item.getType().equals(Material.SKULL_ITEM) || url == null) return this;
         url = "http://textures.minecraft.net/texture/" + url;
         ItemMeta meta = item.getItemMeta();
@@ -48,9 +60,14 @@ public class ItemCreator extends AbstractItemCreator {
         propertyMap.put("textures", new Property("textures", new String(encodedData)));
         ItemMeta headMeta = this.item.getItemMeta();
         Class<?> headMetaClass = headMeta.getClass();
-        headMetaClass.getField("profile").set(headMeta, profile);
+        try {
+            headMetaClass.getField("profile").set(headMeta, profile);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
         this.item.setItemMeta(headMeta);
         return this;
-
     }
 }

@@ -2,9 +2,7 @@ package net.hyper.mc.server.player.party;
 
 import balbucio.sqlapi.sqlite.SQLiteInstance;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
-import net.hyper.mc.server.bungeecord.BungeeManager;
 import net.hyper.mc.server.network.CraftNetworkManager;
-import net.hyper.mc.spigot.network.NetworkManager;
 import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyManager;
 import net.hyper.mc.spigot.player.party.PartyPlayer;
@@ -12,12 +10,20 @@ import net.hyper.mc.spigot.player.party.PartyRole;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.inventory.ItemCreator;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CraftPartyManager implements PartyManager {
@@ -32,6 +38,7 @@ public class CraftPartyManager implements PartyManager {
     private SQLiteInstance sqlite;
     private CopyOnWriteArrayList<Party> parties = new CopyOnWriteArrayList<>();
     private HyperMessageBroker messeger;
+    private Map<Inventory, Player> guis = new HashMap<>();
 
     public CraftPartyManager(CraftServer server) {
         instance = this;
@@ -134,7 +141,7 @@ public class CraftPartyManager implements PartyManager {
 
     public void inviteToParty(Player player, String targetName, Party party) {
         Player target = Bukkit.getPlayer(targetName);
-        if(target != null || CraftNetworkManager.getInstance().hasPlayer(targetName)) {
+        if (target != null || CraftNetworkManager.getInstance().hasPlayer(targetName)) {
             party.addConvite(targetName);
             if (target != null) {
                 target.sendMessage("");
@@ -158,7 +165,7 @@ public class CraftPartyManager implements PartyManager {
                                 .toString());
             }
             player.sendMessage("§aO jogador foi convidado!");
-        } else{
+        } else {
             player.sendMessage("§cO player não está online ou este comando não existe!");
         }
     }
@@ -202,8 +209,31 @@ public class CraftPartyManager implements PartyManager {
     public void showInfo(Player player) {
         Party party = getParty(player);
         if (party == null) {
-            player.sendMessage("§aCrie uma party enviando um convite para alguém!");
-            player.sendMessage("§aEnvie um convite usando: §7/party <nickname>");
+            player.sendMessage("§aCrie uma party enviando um convite!");
+            player.sendMessage("§aPara enviar um convite, use: §7/party <jogador>");
+        } else {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+            Inventory inventory = Bukkit.createInventory(null, 9);
+            ItemStack infoStack = new ItemCreator(Material.PAPER)
+                    .addLore(Arrays.asList(
+                            "§7Dono: " + party.getOwner().getName(),
+                            "§7Nome: §f" + party.getName(),
+                            "§7Limite de jogadores: §f" + party.getMembers().size() + "/" + party.getMaxSize(),
+                            "§7Estado da Party: " + (party.isOpen() ? "Pública" : "Privada"),
+                            "§7Criado em " + dateFormat.format(party.getCreateTime())))
+                    .withName("§aInformações")
+                    .removeFlags()
+                    .done();
+            inventory.addItem(infoStack);
+            ItemStack convidarStack = new ItemCreator(Material.SIGN)
+                    .addLore(Arrays.asList(
+                            "§7Convide um jogador para",
+                            "§7sua party §bclicando aqui§7."))
+                    .withName("§aConvidar um jogador")
+                    .removeFlags().done();
+            inventory.addItem(convidarStack);
+            ItemStack members = Bukkit.
+            guis.put(inventory, player);
         }
     }
 
@@ -234,7 +264,7 @@ public class CraftPartyManager implements PartyManager {
                     .filter(p -> p.getName().equalsIgnoreCase(name))
                     .findFirst().orElse(null);
 
-            if(pp != null){
+            if (pp != null) {
                 party.setOwner(pp);
                 party.getMembers().remove(pp);
                 party.getMembers().put(oldOwner, PartyRole.MEMBER);
@@ -246,9 +276,9 @@ public class CraftPartyManager implements PartyManager {
         }
     }
 
-    public void replace(Player player){
+    public void replace(Player player) {
         parties.forEach(p -> {
-            if(p.getOwner().getName().equalsIgnoreCase(player.getName())){
+            if (p.getOwner().getName().equalsIgnoreCase(player.getName())) {
                 p.setOwner(player);
             }
             p.getMembers().keySet().stream().filter(ap -> ap.getName().equalsIgnoreCase(player.getName())).forEach(ap -> {
