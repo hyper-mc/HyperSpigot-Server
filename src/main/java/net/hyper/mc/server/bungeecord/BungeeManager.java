@@ -37,7 +37,7 @@ public class BungeeManager implements IBungeeManager {
 
     @Override
     public int getOnlineCount() {
-        AtomicInteger v = new AtomicInteger();
+        AtomicInteger v = new AtomicInteger(0);
         servers.forEach((s, i) -> v.addAndGet((int) i.get("count")));
         return v.get();
     }

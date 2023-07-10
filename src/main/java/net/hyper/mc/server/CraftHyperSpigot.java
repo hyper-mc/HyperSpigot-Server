@@ -47,6 +47,7 @@ public class CraftHyperSpigot implements HyperSpigot {
         if(configuration.getBoolean("party.active") && configuration.getBoolean("hypermessagebroker.active")){
             this.partyManager = new CraftPartyManager(server);
         }
+        bungeeManager = new BungeeManager(server);
         roleManager = new CraftRoleManager(messageBroker);
     }
 

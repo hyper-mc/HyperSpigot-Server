@@ -7,6 +7,8 @@ import net.hyper.mc.spigot.player.role.RoleManager;
 import org.bukkit.entity.Player;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,7 +26,9 @@ public class CraftRoleManager implements RoleManager {
     private Gson gson = new Gson();
 
     public CraftRoleManager(HyperMessageBroker broker){
+        instance = this;
         broker.registerConsumer("hyperspigot-roles", m -> {
+            roles.clear();
             JSONObject data = new JSONObject((String) m.getValue());
             for(Object g : data.getJSONArray("roles")){
                 Role r = gson.fromJson((String) g, Role.class);
@@ -35,7 +39,7 @@ public class CraftRoleManager implements RoleManager {
 
     @Override
     public Role getRole(Player player) {
-        Role role;
+        Role role = null;
         role = findMostImportant(roles.values().stream()
                 .filter(r -> player.hasPermission(r.getPermission()))
                 .collect(Collectors.toList()));
@@ -49,7 +53,14 @@ public class CraftRoleManager implements RoleManager {
         return role;
     }
 
+    @Override
+    public List<Role> getRoles() {
+        ArrayList<Role> roles = new ArrayList<>(this.roles.values());
+        return roles;
+    }
+
     private Role findMostImportant(List<Role> role){
         return role.stream().min(Comparator.comparingInt(Role::getOrder)).orElse(null);
     }
+
 }

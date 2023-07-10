@@ -1,11 +1,8 @@
 package net.hyper.mc.server.player.party;
 
-import balbucio.sqlapi.model.ConditionValue;
 import balbucio.sqlapi.sqlite.SQLiteInstance;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.bungeecord.BungeeManager;
-import net.hyper.mc.spigot.HyperSpigot;
-import net.hyper.mc.spigot.bungeecord.BungeeAction;
 import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyManager;
 import net.hyper.mc.spigot.player.party.PartyPlayer;
@@ -92,7 +89,7 @@ public class CraftPartyManager implements PartyManager {
         JSONObject packet = new JSONObject();
         packet.put("channel", "create");
         packet.put("data", party.getPartyJson().toString());
-        messeger.sendMessage("party", packet);
+        messeger.sendMessage("party", packet.toString());
         parties.add(party);
         return party;
     }
@@ -134,9 +131,9 @@ public class CraftPartyManager implements PartyManager {
     }
 
     public void inviteToParty(Player player, String targetName, Party party) {
-        if(Bukkit.getPlayer(targetName) != null || BungeeManager.getInstance().hasPlayer(targetName)) {
+        Player target = Bukkit.getPlayer(targetName);
+        if(target != null || BungeeManager.getInstance().hasPlayer(targetName)) {
             party.addConvite(targetName);
-            Player target = Bukkit.getPlayer(targetName);
             if (target != null) {
                 target.sendMessage("");
                 target.sendMessage("§d O jogador §f" + player.getDisplayName() + "§d te convidou para uma party.");
