@@ -31,9 +31,8 @@ import lombok.Setter;
 import net.hyper.mc.server.CraftHyperSpigot;
 import net.hyper.mc.server.player.PlayerContainer;
 import net.hyper.mc.spigot.HyperSpigot;
-import net.minecraft.server.*;
 
-import net.minecraft.server.ItemStack;
+import net.minecraft.server.*;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -1731,7 +1730,7 @@ public final class CraftServer implements Server {
     }
 
     @Override
-    public ItemCreator createItemCreator(Material material){
+    public ItemCreator createItemCreator(org.bukkit.Material material){
         return new AbstractItemCreator(material);
     }
 
