@@ -1,7 +1,7 @@
-package net.hyper.mc.server.player.role;
+package net.hyper.mc.server.player.scoreboard;
 
 import net.hyper.mc.server.event.EventHandler;
-import net.hyper.mc.spigot.player.party.TeamManager;
+import net.hyper.mc.spigot.player.scoreboard.TeamManager;
 import net.hyper.mc.spigot.player.role.Role;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -52,19 +52,33 @@ public class CraftTeamManager implements TeamManager {
         return team;
     }
 
+    public void removeCustomTeam(int order, String name, String key){
+        scoreboard.getTeams().stream().filter(t -> t.getName().equalsIgnoreCase(order+name)).findFirst().ifPresent(t -> {
+            customTeams.get(key).remove(t);
+            t.unregister();
+        });
+    }
+
     private void registerRoles(){
         teamByRole.clear();
         List<Role> roles = Bukkit.getHyperSpigot().getRoleManager().getRoles();
         roles.forEach(r -> {
-            Team team = scoreboard.registerNewTeam(r.getOrder()+r.getName());
-            team.setPrefix(r.getTag());
-            team.setNameTagVisibility(NameTagVisibility.ALWAYS);
+            Team team;
+            if(!scoreboard.getTeams().stream().anyMatch(t -> t.getName().equalsIgnoreCase(r.getOrder()+r.getName()))){
+                team = scoreboard.registerNewTeam(r.getOrder() + r.getName());
+                team.setPrefix(r.getTag() + " ");
+                team.setNameTagVisibility(NameTagVisibility.ALWAYS);
+            } else {
+                team = scoreboard.getTeam(r.getOrder()+ r.getName());
+                team.setPrefix(r.getTag() + " ");
+                team.setNameTagVisibility(NameTagVisibility.ALWAYS);
+            }
+            teamByRole.put(r, team);
             Bukkit.getOnlinePlayers().forEach(p -> {
-                if(p.getRole() == r){
+                if (p.getRole() == r && !team.hasEntry(p.getName())) {
                     team.addPlayer(p);
                 }
             });
-            teamByRole.put(r, team);
         });
     }
 }

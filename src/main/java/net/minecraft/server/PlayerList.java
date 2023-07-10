@@ -428,7 +428,7 @@ public abstract class PlayerList {
         EntityPlayer entity = new EntityPlayer(server, server.getWorldServer(0), gameprofile, new PlayerInteractManager(server.getWorldServer(0)));
         Player player = entity.getBukkitEntity();
         String role = player.getRole() != null ? player.getRole().getTag() : "";
-        entity.displayName = role + entity.getName();
+        entity.displayName = role + " " + entity.getName();
         PlayerLoginEvent event = new PlayerLoginEvent(player, hostname, ((java.net.InetSocketAddress) socketaddress).getAddress(), ((java.net.InetSocketAddress) loginlistener.networkManager.getRawAddress()).getAddress());
         String s;
 

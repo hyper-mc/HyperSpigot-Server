@@ -23,8 +23,10 @@ import java.util.logging.Logger;
 import net.hyper.mc.server.player.PlayerContainer;
 import net.hyper.mc.server.player.party.CraftPartyManager;
 import net.hyper.mc.server.player.role.CraftRoleManager;
+import net.hyper.mc.server.player.scoreboard.CraftTeamManager;
 import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyPlayer;
+import net.hyper.mc.spigot.player.scoreboard.TeamManager;
 import net.hyper.mc.spigot.player.role.Role;
 import net.md_5.bungee.api.chat.BaseComponent;
 
@@ -72,7 +74,6 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
-import org.json.JSONObject;
 
 @DelegateDeserialization(CraftOfflinePlayer.class)
 public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer {
@@ -86,11 +87,13 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
     private double health = 20;
     private boolean scaledHealth = false;
     private double healthScale = 20;
+    private TeamManager teamManager;
 
     public CraftPlayer(CraftServer server, EntityPlayer entity) {
         super(server, entity);
 
         firstPlayed = System.currentTimeMillis();
+        teamManager = new CraftTeamManager(this);
     }
 
     public GameProfile getProfile() {
@@ -1259,11 +1262,8 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
         if (playerConnection == null) {
             throw new IllegalStateException("Cannot set scoreboard yet");
         }
-        if (playerConnection.isDisconnected()) {
-            // throw new IllegalStateException("Cannot set scoreboard for invalid CraftPlayer"); // Spigot - remove this as Mojang's semi asynchronous Netty implementation can lead to races
-        }
-
         this.server.getScoreboardManager().setPlayerBoard(this, scoreboard);
+        teamManager.setScoreboard(scoreboard);
     }
 
     @Override
@@ -1430,6 +1430,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
     @Override
     public Role getRole() {
         return CraftRoleManager.getInstance().getRole(this);
+    }
+
+    @Override
+    public TeamManager getTeamManager() {
+        return teamManager;
     }
 
     // Spigot start

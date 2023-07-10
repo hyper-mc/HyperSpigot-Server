@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.bungeecord.BungeeManager;
+import net.hyper.mc.server.network.CraftNetworkManager;
 import net.hyper.mc.server.player.PlayerContainer;
 import net.hyper.mc.server.player.party.CraftPartyManager;
 import net.hyper.mc.server.player.role.CraftRoleManager;
@@ -31,6 +32,7 @@ public class CraftHyperSpigot implements HyperSpigot {
     private BungeeManager bungeeManager;
     private CraftPartyManager partyManager;
     private CraftRoleManager roleManager;
+    private CraftNetworkManager networkManager;
     private CraftServer server;
 
     public CraftHyperSpigot(CraftServer server) {
@@ -49,6 +51,7 @@ public class CraftHyperSpigot implements HyperSpigot {
         }
         bungeeManager = new BungeeManager(server);
         roleManager = new CraftRoleManager(messageBroker);
+        networkManager = new CraftNetworkManager(messageBroker);
     }
 
     private void createAndLoadFiles() {

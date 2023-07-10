@@ -3,6 +3,8 @@ package net.hyper.mc.server.player.party;
 import balbucio.sqlapi.sqlite.SQLiteInstance;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.bungeecord.BungeeManager;
+import net.hyper.mc.server.network.CraftNetworkManager;
+import net.hyper.mc.spigot.network.NetworkManager;
 import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyManager;
 import net.hyper.mc.spigot.player.party.PartyPlayer;
@@ -39,7 +41,7 @@ public class CraftPartyManager implements PartyManager {
         messeger = server.getHyperSpigot().getMessenger();
         messeger.sendMessage("party", new JSONObject().put("channel", "register").toString());
         messeger.registerConsumer("party", m -> {
-            JSONObject payload = new JSONObject((String) m.getValue());
+            JSONObject payload = m.getValue() instanceof String ? new JSONObject((String) m.getValue()) : (JSONObject) m.getValue();
             String channel = payload.getString("channel");
             if (channel.equalsIgnoreCase("create")) {
                 JSONObject data = payload.getJSONObject("data");
@@ -132,7 +134,7 @@ public class CraftPartyManager implements PartyManager {
 
     public void inviteToParty(Player player, String targetName, Party party) {
         Player target = Bukkit.getPlayer(targetName);
-        if(target != null || BungeeManager.getInstance().hasPlayer(targetName)) {
+        if(target != null || CraftNetworkManager.getInstance().hasPlayer(targetName)) {
             party.addConvite(targetName);
             if (target != null) {
                 target.sendMessage("");
@@ -157,7 +159,7 @@ public class CraftPartyManager implements PartyManager {
             }
             player.sendMessage("§aO jogador foi convidado!");
         } else{
-            player.sendMessage("O player não está online ou este comando não existe!");
+            player.sendMessage("§cO player não está online ou este comando não existe!");
         }
     }
 
