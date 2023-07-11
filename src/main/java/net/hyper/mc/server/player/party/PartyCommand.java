@@ -1,11 +1,9 @@
 package net.hyper.mc.server.player.party;
 
-import net.hyper.mc.server.bungeecord.BungeeManager;
+import net.hyper.mc.server.bungeecord.CraftBungeeManager;
 import net.hyper.mc.spigot.bungeecord.BungeeAction;
 import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyRole;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.command.api.Command;
 import org.bukkit.command.api.paramter.Param;
 import org.bukkit.entity.Player;
@@ -21,8 +19,8 @@ public class PartyCommand {
             if (party != null) {
                 PartyRole role = party.getOwner() == player ? PartyRole.OWNER : party.getMembers().get(player);
                 if (role == PartyRole.OWNER || role == PartyRole.MANAGER) {
-                    BungeeManager.getInstance().requestUpdate(BungeeAction.SERVER_LIST, null, null);
-                    BungeeManager.getInstance().requestUpdate(BungeeAction.PLAYER_LIST, null, null);
+                    CraftBungeeManager.getInstance().requestUpdate(BungeeAction.SERVER_LIST, null, null);
+                    CraftBungeeManager.getInstance().requestUpdate(BungeeAction.PLAYER_LIST, null, null);
                     CraftPartyManager.getInstance().inviteToParty(player, target, party);
                 }
             } else {

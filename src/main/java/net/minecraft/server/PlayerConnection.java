@@ -3,7 +3,6 @@ package net.minecraft.server;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Floats;
-import com.google.common.util.concurrent.Futures;
 import io.netty.buffer.Unpooled;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import net.hyper.mc.server.bungeecord.BungeeManager;
+import net.hyper.mc.server.bungeecord.CraftBungeeManager;
 import net.hyper.mc.server.event.EventHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -2116,7 +2115,7 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
             packetplayincustompayload.b().readBytes(data);
             String channel = packetplayincustompayload.a();
             if(channel.equalsIgnoreCase("BungeeCord")){
-                BungeeManager.getInstance().pluginMessage(player, data);
+                CraftBungeeManager.getInstance().pluginMessage(player, data);
             }
             server.getMessenger().dispatchIncomingMessage(player.getBukkitEntity(), channel, data);
         }

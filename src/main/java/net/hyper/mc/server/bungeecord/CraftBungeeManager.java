@@ -1,11 +1,9 @@
 package net.hyper.mc.server.bungeecord;
 
 import net.hyper.mc.spigot.bungeecord.BungeeAction;
-import net.hyper.mc.spigot.bungeecord.IBungeeManager;
 import net.hyper.mc.spigot.player.FakePlayer;
 import net.hyper.mc.spigot.utils.PluginMessage;
 import net.minecraft.server.EntityPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Player;
 
@@ -18,18 +16,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class BungeeManager implements IBungeeManager {
+public class CraftBungeeManager implements net.hyper.mc.spigot.bungeecord.BungeeManager {
 
-    private static BungeeManager instance;
+    private static CraftBungeeManager instance;
 
-    public static BungeeManager getInstance() {
+    public static CraftBungeeManager getInstance() {
         return instance;
     }
 
     private ConcurrentHashMap<String, Map<String, Object>> servers = new ConcurrentHashMap<>();
     private CraftServer server;
 
-    public BungeeManager(CraftServer server) {
+    public CraftBungeeManager(CraftServer server) {
         instance = this;
         this.server = server;
         server.getMessenger().registerOutgoingPluginChannel(null, "BungeeCord");
