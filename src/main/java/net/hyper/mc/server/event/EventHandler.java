@@ -2,6 +2,8 @@ package net.hyper.mc.server.event;
 
 import net.hyper.mc.server.CraftHyperSpigot;
 import net.hyper.mc.server.player.party.CraftPartyManager;
+import net.hyper.mc.spigot.player.FakePlayer;
+import net.hyper.mc.spigot.player.party.PartyPlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -26,6 +28,9 @@ public class EventHandler {
     }
 
     public static void onQuit(PlayerQuitEvent evt){
+        if(CraftPartyManager.getInstance() != null){
+            CraftPartyManager.getInstance().replace(new FakePlayer(evt.getPlayer().getName()));
+        }
         list.forEach(l -> l.listener(evt));
     }
 

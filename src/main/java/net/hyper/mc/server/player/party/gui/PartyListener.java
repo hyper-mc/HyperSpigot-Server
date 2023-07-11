@@ -47,7 +47,7 @@ public class PartyListener implements EventHandler.Listener {
     }
 
     private void showMembers(Player player, Party party){
-        Inventory inventory = Bukkit.createInventory(null, 6*9);
+        Inventory inventory = Bukkit.createInventory(null, 6*9, "Membros da Party");
         int i = 1;
         int p = i+7;
         for(PartyPlayer pl : party.getMembers().keySet()){

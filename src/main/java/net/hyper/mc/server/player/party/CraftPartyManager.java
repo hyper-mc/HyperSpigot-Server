@@ -215,7 +215,7 @@ public class CraftPartyManager implements PartyManager {
             player.sendMessage("§aPara enviar um convite, use: §7/party <jogador>");
         } else {
             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-            Inventory inventory = Bukkit.createInventory(null, 9);
+            Inventory inventory = Bukkit.createInventory(null, 9, "Informações da Party");
             ItemStack infoStack = Bukkit.createItemCreator(Material.PAPER)
                     .addLore(Arrays.asList(
                             "§7Dono: " + party.getOwner().getName(),
@@ -299,7 +299,7 @@ public class CraftPartyManager implements PartyManager {
         }
     }
 
-    public void replace(Player player) {
+    public void replace(PartyPlayer player) {
         parties.forEach(p -> {
             if (p.getOwner().getName().equalsIgnoreCase(player.getName())) {
                 p.setOwner(player);
