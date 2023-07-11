@@ -3,6 +3,7 @@ package net.hyper.mc.server.event;
 import net.hyper.mc.server.CraftHyperSpigot;
 import net.hyper.mc.server.player.party.CraftPartyManager;
 import org.bukkit.event.Event;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -25,6 +26,10 @@ public class EventHandler {
     }
 
     public static void onQuit(PlayerQuitEvent evt){
+        list.forEach(l -> l.listener(evt));
+    }
+
+    public static void onInventoryClick(InventoryClickEvent evt){
         list.forEach(l -> l.listener(evt));
     }
 

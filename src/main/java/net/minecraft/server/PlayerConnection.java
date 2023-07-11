@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 import net.hyper.mc.server.bungeecord.BungeeManager;
+import net.hyper.mc.server.event.EventHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -1629,6 +1630,7 @@ public class PlayerConnection implements PacketListenerPlayIn, IUpdatePlayerList
 
                     event.setCancelled(cancelled);
                     server.getPluginManager().callEvent(event);
+                    EventHandler.onInventoryClick(event);
 
                     switch (event.getResult()) {
                         case ALLOW:

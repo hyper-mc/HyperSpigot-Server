@@ -3,6 +3,7 @@ package net.hyper.mc.server.player.party;
 import balbucio.sqlapi.sqlite.SQLiteInstance;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.network.CraftNetworkManager;
+import net.hyper.mc.server.player.party.gui.PartyListener;
 import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyManager;
 import net.hyper.mc.spigot.player.party.PartyPlayer;
@@ -38,7 +39,6 @@ public class CraftPartyManager implements PartyManager {
     private SQLiteInstance sqlite;
     private CopyOnWriteArrayList<Party> parties = new CopyOnWriteArrayList<>();
     private HyperMessageBroker messeger;
-    private Map<Inventory, Player> guis = new HashMap<>();
 
     public CraftPartyManager(CraftServer server) {
         instance = this;
@@ -75,6 +75,8 @@ public class CraftPartyManager implements PartyManager {
                         .forEach(p -> parties.remove(p));
             }
         });
+
+
     }
 
     public Party getParty(Player player) {
@@ -253,7 +255,8 @@ public class CraftPartyManager implements PartyManager {
                     .addLore(Arrays.asList("§7Clique para deletar a party."))
                     .withName("§cDeletar Party").done();
             inventory.addItem(excluir);
-            guis.put(inventory, player);
+            PartyListener.guis.put(inventory, player);
+            player.openInventory(inventory);
         }
     }
 
