@@ -42,6 +42,7 @@ public class CraftHyperSpigot implements HyperSpigot {
     public CraftHyperSpigot(CraftServer server) {
         this.server = server;
         createAndLoadFiles();
+        createTables();
     }
     public void loadAndConfigure(){
         if(configuration.getBoolean("hypermessagebroker.active")){
@@ -56,6 +57,10 @@ public class CraftHyperSpigot implements HyperSpigot {
         bungeeManager = new CraftBungeeManager(server);
         roleManager = new CraftRoleManager(messageBroker);
         networkManager = new CraftNetworkManager(messageBroker);
+    }
+
+    public void createTables(){
+        server.getSQLiteInstance().createTable("hyperstats", "name VARCHAR(255), key VARCHAR(255), data TEXT");
     }
 
     private void createAndLoadFiles() {

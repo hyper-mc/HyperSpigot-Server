@@ -24,6 +24,7 @@ import net.hyper.mc.server.player.PlayerContainer;
 import net.hyper.mc.server.player.party.CraftPartyManager;
 import net.hyper.mc.server.player.role.CraftRoleManager;
 import net.hyper.mc.server.player.scoreboard.CraftTeamManager;
+import net.hyper.mc.server.player.stats.CraftPlayerStatisticsManager;
 import net.hyper.mc.spigot.event.experience.ExperienceAddedEvent;
 import net.hyper.mc.spigot.event.experience.ExperienceLevelUpEvent;
 import net.hyper.mc.spigot.event.experience.ExperienceRemovedEvent;
@@ -31,6 +32,7 @@ import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyPlayer;
 import net.hyper.mc.spigot.player.scoreboard.TeamManager;
 import net.hyper.mc.spigot.player.role.Role;
+import net.hyper.mc.spigot.player.stats.PlayerStatisticsManager;
 import net.md_5.bungee.api.chat.BaseComponent;
 
 import net.minecraft.server.*;
@@ -92,12 +94,14 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
     private boolean scaledHealth = false;
     private double healthScale = 20;
     private TeamManager teamManager;
+    private PlayerStatisticsManager playerStatisticsManager;
 
     public CraftPlayer(CraftServer server, EntityPlayer entity) {
         super(server, entity);
 
         firstPlayed = System.currentTimeMillis();
         teamManager = new CraftTeamManager(this);
+        playerStatisticsManager = new CraftPlayerStatisticsManager(this);
         if(!getPlayerData().containsKey("hyperspigot-experience")){
             setData("hyperspigot-experience", new JSONObject());
         }
