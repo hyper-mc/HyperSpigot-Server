@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.bungeecord.CraftBungeeManager;
+import net.hyper.mc.server.command.CashCommand;
 import net.hyper.mc.server.network.CraftNetworkManager;
 import net.hyper.mc.server.player.PlayerContainer;
 import net.hyper.mc.server.player.party.CraftPartyManager;
@@ -14,6 +15,7 @@ import net.hyper.mc.spigot.bungeecord.BungeeManager;
 import net.hyper.mc.spigot.player.FakePlayer;
 import net.hyper.mc.spigot.player.scoreboard.BoardManager;
 import net.hyper.mc.spigot.player.scoreboard.settings.BoardSettings;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
@@ -43,6 +45,7 @@ public class CraftHyperSpigot implements HyperSpigot {
         this.server = server;
         createAndLoadFiles();
         createTables();
+        registerCommands();
     }
     public void loadAndConfigure(){
         if(configuration.getBoolean("hypermessagebroker.active")){
@@ -61,6 +64,10 @@ public class CraftHyperSpigot implements HyperSpigot {
 
     public void createTables(){
         server.getSQLiteInstance().createTable("hyperstats", "name VARCHAR(255), key VARCHAR(255), data TEXT");
+    }
+
+    public void registerCommands(){
+        Bukkit.registerCommand(CashCommand.class);
     }
 
     private void createAndLoadFiles() {
