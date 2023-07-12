@@ -24,6 +24,9 @@ import net.hyper.mc.server.player.PlayerContainer;
 import net.hyper.mc.server.player.party.CraftPartyManager;
 import net.hyper.mc.server.player.role.CraftRoleManager;
 import net.hyper.mc.server.player.scoreboard.CraftTeamManager;
+import net.hyper.mc.spigot.event.experience.ExperienceAddedEvent;
+import net.hyper.mc.spigot.event.experience.ExperienceLevelUpEvent;
+import net.hyper.mc.spigot.event.experience.ExperienceRemovedEvent;
 import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyPlayer;
 import net.hyper.mc.spigot.player.scoreboard.TeamManager;
@@ -74,6 +77,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scoreboard.Scoreboard;
+import org.json.JSONObject;
 
 @DelegateDeserialization(CraftOfflinePlayer.class)
 public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer {
@@ -94,6 +98,9 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
 
         firstPlayed = System.currentTimeMillis();
         teamManager = new CraftTeamManager(this);
+        if(!getPlayerData().containsKey("hyperspigot-experience")){
+            setData("hyperspigot-experience", new JSONObject());
+        }
     }
 
     public GameProfile getProfile() {
@@ -1435,6 +1442,90 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
     @Override
     public TeamManager getTeamManager() {
         return teamManager;
+    }
+
+    @Override
+    public synchronized int getLevel(String key) {
+        JSONObject data = ((JSONObject) getData("hyperspigot-experience"));
+        return data.optInt(key+"-level", 1);
+    }
+
+    @Override
+    public synchronized void setExperience(String key, long value) {
+        JSONObject data = ((JSONObject) getData("hyperspigot-experience"));
+        data.put(key, value);
+        setData("hyperspigot-experience", data);
+    }
+
+    @Override
+    public synchronized void addExperience(String key, long value) {
+        if(value < 0){
+            return;
+        }
+        JSONObject data = ((JSONObject) getData("hyperspigot-experience"));
+        long v = getExperience(key);
+        int olvl = getLevel(key);
+        v += value;
+        data.put(key, v);
+        int lvl = Math.round(value / (1000*olvl));
+        if(lvl > olvl){
+            data.put(key+"-level", lvl);
+            Bukkit.getPluginManager().callEvent(new ExperienceLevelUpEvent(this, lvl));
+        }
+        setData("hyperspigot-experience", data);
+        Bukkit.getPluginManager().callEvent(new ExperienceAddedEvent(this, v));
+    }
+
+    @Override
+    public synchronized void removeExperience(String key, long value) {
+        if(value < 0){
+            return;
+        }
+        JSONObject data = ((JSONObject) getData("hyperspigot-experience"));
+        long v = getExperience(key);
+        v -= value;
+        data.put(key, v);
+        setData("hyperspigot-experience", data);
+        Bukkit.getPluginManager().callEvent(new ExperienceRemovedEvent(this, v));
+    }
+
+    @Override
+    public synchronized long getExperience(String key) {
+        JSONObject data = ((JSONObject) getData("hyperspigot-experience"));
+        return data.optLong(key, 1L);
+    }
+
+    @Override
+    public synchronized long getCash() {
+        return (long) getData("cash");
+    }
+
+    @Override
+    public synchronized void addCash(long c) {
+        if(c < 0){
+            return;
+        }
+        Long cash = (Long) getData("cash");
+        cash += c;
+        setData("cash", cash);
+    }
+
+    @Override
+    public synchronized void setCash(long cash) {
+        if(cash < 0){
+            return;
+        }
+        setData("cash", cash);
+    }
+
+    @Override
+    public synchronized void removeCash(long c) {
+        if(c < 0){
+            return;
+        }
+        Long cash = (Long) getData("cash");
+        cash -= c;
+        setData("cash", cash);
     }
 
     // Spigot start
