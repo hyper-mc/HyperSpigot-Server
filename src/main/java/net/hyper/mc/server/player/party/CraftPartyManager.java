@@ -21,10 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CraftPartyManager implements PartyManager {
@@ -81,7 +78,7 @@ public class CraftPartyManager implements PartyManager {
 
     public Party getParty(Player player) {
         return parties.stream()
-                .filter(p -> p.getMembers().containsKey(player) && p.getOwner() == player)
+                .filter(p -> p.getMembers().containsKey(player) || p.getOwner() == player)
                 .findFirst().orElse(null);
     }
 
@@ -144,6 +141,14 @@ public class CraftPartyManager implements PartyManager {
     public void inviteToParty(Player player, String targetName, Party party) {
         Player target = Bukkit.getPlayer(targetName);
         if (target != null || CraftNetworkManager.getInstance().hasPlayer(targetName)) {
+            if(party.hasMember(targetName)){
+                player.sendMessage("§cEste jogador já é membro da party!");
+             return;
+            }
+            if(party.getConvites().containsKey(targetName) && party.getConvites().get(targetName) > new Date().getTime()){
+                player.sendMessage("§cVocê já convidou este jogador.");
+                return;
+            }
             party.addConvite(targetName);
             if (target != null) {
                 target.sendMessage("");
