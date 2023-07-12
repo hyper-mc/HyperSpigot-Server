@@ -27,19 +27,20 @@ public class PartyListener implements EventHandler.Listener {
             Player clicker = (Player) ((InventoryClickEvent) evt).getWhoClicked();
             int slot = ((InventoryClickEvent) evt).getSlot();
             Party party = clicker.getParty();
-            if(party == null){
-                clicker.closeInventory();
-                guis.remove(inventory);
-                return;
-            }
             if (guis.containsKey(inventory)) {
-                if(slot == 2){
+                if (party == null) {
+                    clicker.closeInventory();
+                    guis.remove(inventory);
+                    return;
+                }
+                ((InventoryClickEvent) evt).setCancelled(true);
+                if (slot == 2) {
 
-                } else if(slot == 3){
+                } else if (slot == 3) {
                     showMembers(clicker, party);
-                } else if(slot == 4){
+                } else if (slot == 4) {
 
-                } else if(slot == 5){
+                } else if (slot == 5) {
 
                 }
             }
@@ -63,5 +64,6 @@ public class PartyListener implements EventHandler.Listener {
                 p = i+7;
             }
         }
+        player.openInventory(inventory);
     }
 }

@@ -223,7 +223,7 @@ public class CraftPartyManager implements PartyManager {
             Inventory inventory = Bukkit.createInventory(null, 9, "Informações da Party");
             ItemStack infoStack = Bukkit.createItemCreator(Material.PAPER)
                     .addLore(new ArrayList<>(Arrays.asList(
-                            "§7Dono: " + party.getOwner().getName(),
+                            "§7Dono: §f" + party.getOwner().getName(),
                             "§7Nome: §f" + party.getName(),
                             "§7Limite de jogadores: §f" + party.getMembers().size() + "/" + party.getMaxSize(),
                             "§7Estado da Party: §f" + (party.isOpen() ? "Pública" : "Privada"),
