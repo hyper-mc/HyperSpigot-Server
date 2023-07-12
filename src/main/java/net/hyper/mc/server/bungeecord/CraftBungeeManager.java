@@ -188,7 +188,7 @@ public class CraftBungeeManager implements net.hyper.mc.spigot.bungeecord.Bungee
                 break;
             case MESSAGE:
                 if(value != null) {
-                    msg = new PluginMessage("Message").add((String) value);
+                    msg = new PluginMessage("Message").add(player.getName()).add((String) value);
                     server.sendPluginMessage("BungeeCord", msg.getBytes());
                 }
         }
