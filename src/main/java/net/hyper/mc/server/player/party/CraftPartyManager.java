@@ -222,42 +222,42 @@ public class CraftPartyManager implements PartyManager {
             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd/MM/yyyy");
             Inventory inventory = Bukkit.createInventory(null, 9, "Informações da Party");
             ItemStack infoStack = Bukkit.createItemCreator(Material.PAPER)
-                    .addLore(Arrays.asList(
+                    .addLore(new ArrayList<>(Arrays.asList(
                             "§7Dono: " + party.getOwner().getName(),
                             "§7Nome: §f" + party.getName(),
                             "§7Limite de jogadores: §f" + party.getMembers().size() + "/" + party.getMaxSize(),
                             "§7Estado da Party: §f" + (party.isOpen() ? "Pública" : "Privada"),
                             "§7Estado do Chat: §f" + (party.isChatMuted() ? "Apenas para Moderadores" : "Liberado para Todos"),
-                            "§7Criado em: §f" + dateFormat.format(party.getCreateTime())))
+                            "§7Criado em: §f" + dateFormat.format(party.getCreateTime()))))
                     .withName("§aInformações")
                     .removeFlags()
                     .done();
             inventory.addItem(infoStack);
             ItemStack convidarStack = Bukkit.createItemCreator(Material.SIGN)
-                    .addLore(Arrays.asList(
+                    .addLore(new ArrayList<>(Arrays.asList(
                             "§7Convide um jogador para",
-                            "§7sua party §bclicando aqui§7."))
+                            "§7sua party §bclicando aqui§7.")))
                     .withName("§aConvidar um jogador")
                     .removeFlags().done();
             inventory.addItem(convidarStack);
             ItemStack members = Bukkit.createItemCreator(player.getItemHead())
-                    .addLore(Arrays.asList("§7Clique para ver os membros."))
+                    .addLore(new ArrayList<>(Arrays.asList("§7Clique para ver os membros.")))
                     .withName("§aMembros da Party")
                     .removeFlags()
                     .done();
             inventory.addItem(members);
             ItemStack partidaExclsuiva = Bukkit.createItemCreator(Material.ENDER_PEARL)
-                    .addLore(Arrays.asList("§7Clique para criar uma partida privada."))
+                    .addLore(new ArrayList<>(Arrays.asList("§7Clique para criar uma partida privada.")))
                     .withName("§aPartida Privada")
                     .done();
             inventory.addItem(partidaExclsuiva);
             ItemStack convites = Bukkit.createItemCreator(Material.NAME_TAG)
-                    .addLore(Arrays.asList("§7Clique para ver os convites enviados."))
+                    .addLore(new ArrayList<>(Arrays.asList("§7Clique para ver os convites enviados.")))
                     .withName("§aConvites Enviados")
                     .done();
             inventory.addItem(convites);
             ItemStack excluir = Bukkit.createItemCreator(Material.BARRIER)
-                    .addLore(Arrays.asList("§7Clique para deletar a party."))
+                    .addLore(new ArrayList<>(Arrays.asList("§7Clique para deletar a party.")))
                     .withName("§cDeletar Party").done();
             inventory.addItem(excluir);
             PartyListener.guis.put(inventory, player);
