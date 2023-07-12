@@ -1392,7 +1392,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
 
     @Override
     public ItemStack getItemHead() {
-        ItemStack stack = new ItemStack(Material.SKULL, 1);
+        ItemStack stack = new ItemStack(Material.SKULL_ITEM, 1);
         SkullMeta meta = (SkullMeta) stack.getItemMeta();
         meta.setOwner(this.getName());
         stack.setItemMeta(meta);
