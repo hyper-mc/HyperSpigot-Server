@@ -80,7 +80,7 @@ public class PlayerContainer {
     }
 
     public static Map<String, Object> getMap(Player player){
-        return instance.container.get(player.getName()).toMap();
+        return instance.container.getOrDefault(player.getName(), new JSONObject()).toMap();
     }
 
     public static void addPlayer(EntityPlayer player){

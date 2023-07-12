@@ -1467,10 +1467,9 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
         int olvl = getLevel(key);
         v += value;
         data.put(key, v);
-        int lvl = Math.round(value / (1000*olvl));
-        if(lvl > olvl){
-            data.put(key+"-level", lvl);
-            Bukkit.getPluginManager().callEvent(new ExperienceLevelUpEvent(this, lvl));
+        if(v > (1000 * (3 * olvl))){
+            data.put(key+"-level", (olvl+1));
+            Bukkit.getPluginManager().callEvent(new ExperienceLevelUpEvent(this, (olvl+1)));
         }
         setData("hyperspigot-experience", data);
         Bukkit.getPluginManager().callEvent(new ExperienceAddedEvent(this, v));
