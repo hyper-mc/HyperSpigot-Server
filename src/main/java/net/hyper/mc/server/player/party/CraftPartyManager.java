@@ -99,7 +99,7 @@ public class CraftPartyManager implements PartyManager {
         Party party = new Party(owner);
         JSONObject packet = new JSONObject();
         packet.put("channel", "create");
-        packet.put("data", party.getPartyJson().toString());
+        packet.put("data", party.getPartyJson());
         messeger.sendMessage("party", packet.toString());
         parties.add(party);
         return party;
