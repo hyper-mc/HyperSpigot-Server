@@ -78,7 +78,7 @@ public class CraftPartyManager implements PartyManager {
 
     public Party getParty(Player player) {
         return parties.stream()
-                .filter(p -> p.getMembers().containsKey(player) || p.getOwner() == player)
+                .filter(p -> p.getMembers().containsKey(player) || p.getOwner().getName().equalsIgnoreCase(player.getName()))
                 .findFirst().orElse(null);
     }
 

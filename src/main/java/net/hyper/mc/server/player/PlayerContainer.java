@@ -43,7 +43,7 @@ public class PlayerContainer {
                 }
                 String player = update.getString("player");
 
-                if(container.containsKey(player)){
+                if(container.containsKey(player)) {
                     container.get(player).put(update.getString("key"), update.get("value"));
                 }
 
@@ -73,8 +73,10 @@ public class PlayerContainer {
 
     public static void setData(Player player, String key, Object obj){
         JSONObject json = instance.container.getOrDefault(player.getName(), new JSONObject());
+        System.out.println(obj);
         json.put(key, obj);
         instance.container.replace(player.getName(), json);
+
         instance.server.getSQLiteInstance().set(new ConditionValue[]{
                 new ConditionValue("name", ConditionValue.Conditional.EQUALS, player.getName(), ConditionValue.Operator.NULL)
         }, "data", instance.container.get(player.getName()).toString(), "playercontainer");
@@ -93,7 +95,7 @@ public class PlayerContainer {
         if(sqlite.exists(new ConditionValue[]{
                 new ConditionValue("name", ConditionValue.Conditional.EQUALS, player.getName(), ConditionValue.Operator.NULL)
         }, "playercontainer")){
-            instance.container.put(player.getName(), new JSONObject(sqlite.get(new ConditionValue[]{
+            instance.container.put(player.getName(), new JSONObject((String) sqlite.get(new ConditionValue[]{
                     new ConditionValue("name", ConditionValue.Conditional.EQUALS, player.getName(), ConditionValue.Operator.NULL)
             }, "data", "playercontainer")));
         } else{
