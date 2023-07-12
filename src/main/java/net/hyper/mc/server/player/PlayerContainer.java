@@ -38,6 +38,9 @@ public class PlayerContainer {
         if(sync){
             broker.registerConsumer("hyperspigot-playercontainer", m -> {
                 JSONObject update = new JSONObject(m.getValue());
+                if(!update.has("player")){
+                    return;
+                }
                 String player = update.getString("player");
 
                 if(container.containsKey(player)){
