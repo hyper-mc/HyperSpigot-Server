@@ -102,9 +102,6 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
         firstPlayed = System.currentTimeMillis();
         teamManager = new CraftTeamManager(this);
         playerStatisticsManager = new CraftPlayerStatisticsManager(this);
-        if(!getPlayerData().containsKey("hyperspigot-experience")){
-            setData("hyperspigot-experience", new JSONObject());
-        }
     }
 
     public GameProfile getProfile() {

@@ -40,6 +40,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
+import org.json.JSONObject;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 // CraftBukkit end
 
@@ -158,7 +159,9 @@ public abstract class PlayerList {
 
         // chatmessage.getChatModifier().setColor(EnumChatFormat.YELLOW);
         // this.sendMessage(chatmessage);
+        PlayerContainer.addPlayer(entityplayer);
         this.onPlayerJoin(entityplayer, joinMessage);
+
         // CraftBukkit end
         worldserver = server.getWorldServer(entityplayer.dimension);  // CraftBukkit - Update in case join event changed it
         playerconnection.a(entityplayer.locX, entityplayer.locY, entityplayer.locZ, entityplayer.yaw, entityplayer.pitch);
@@ -296,12 +299,13 @@ public abstract class PlayerList {
         this.j.put(entityplayer.getUniqueID(), entityplayer);
         // this.sendAll(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, new EntityPlayer[] { entityplayer})); // CraftBukkit - replaced with loop below
         WorldServer worldserver = this.server.getWorldServer(entityplayer.dimension);
-
-        PlayerContainer.addPlayer(entityplayer);
         // CraftBukkit start
         PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(cserver.getPlayer(entityplayer), joinMessage);
         cserver.getPluginManager().callEvent(playerJoinEvent);
         EventHandler.onJoin(playerJoinEvent);
+        if(!entityplayer.getBukkitEntity().getPlayerData().containsKey("hyperspigot-experience")){
+            entityplayer.getBukkitEntity().setData("hyperspigot-experience", new JSONObject());
+        }
 
         joinMessage = playerJoinEvent.getJoinMessage();
 
