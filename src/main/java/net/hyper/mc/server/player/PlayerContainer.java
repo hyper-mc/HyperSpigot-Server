@@ -69,7 +69,9 @@ public class PlayerContainer {
     }
 
     public static void setData(Player player, String key, Object obj){
-        instance.container.getOrDefault(player.getName(), new JSONObject()).put(key, obj);
+        JSONObject json = instance.container.getOrDefault(player.getName(), new JSONObject());
+        json.put(key, obj);
+        instance.container.replace(key, json);
         instance.server.getSQLiteInstance().set(new ConditionValue[]{
                 new ConditionValue("name", ConditionValue.Conditional.EQUALS, player.getName(), ConditionValue.Operator.NULL)
         }, "data", instance.container.get(player.getName()).toString(), "playercontainer");
