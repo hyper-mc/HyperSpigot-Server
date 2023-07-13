@@ -1603,7 +1603,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
 
     @Override
     public void openServerMenu(){
-
+        Bukkit.getHyperSpigot().getInventoryPlugin().openServer(this);
     }
 
     // Spigot start

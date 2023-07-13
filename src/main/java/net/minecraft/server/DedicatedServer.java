@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Proxy;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -65,6 +66,11 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
     }
 
     protected boolean init() throws IOException {
+        new File("plugins").mkdir();
+        File invetoryPlugin = new File("plugins/HyperSpigot-Inventories.jar");
+        if(!invetoryPlugin.exists()){
+            Files.copy(this.getClass().getResourceAsStream("/hyperspigot-inventories.jar"), invetoryPlugin.toPath());
+        }
         Thread thread = new Thread("Server console handler") {
             public void run() {
                 // CraftBukkit start
