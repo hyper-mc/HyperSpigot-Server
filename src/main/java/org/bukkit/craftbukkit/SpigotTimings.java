@@ -13,14 +13,14 @@ import org.bukkit.craftbukkit.scheduler.CraftTask;
 
 public class SpigotTimings {
 
-    public static final CustomTimingsHandler serverTickTimer = new CustomTimingsHandler("** Full Server Tick");
+    public static final CustomTimingsHandler serverTickTimer = new CustomTimingsHandler("** Full net.hyper.mc.spigot.bungeecord.item.Server Tick");
     public static final CustomTimingsHandler playerListTimer = new CustomTimingsHandler("Player List");
     public static final CustomTimingsHandler connectionTimer = new CustomTimingsHandler("Connection Handler");
     public static final CustomTimingsHandler tickablesTimer = new CustomTimingsHandler("Tickables");
     public static final CustomTimingsHandler schedulerTimer = new CustomTimingsHandler("Scheduler");
     public static final CustomTimingsHandler chunkIOTickTimer = new CustomTimingsHandler("ChunkIOTick");
     public static final CustomTimingsHandler timeUpdateTimer = new CustomTimingsHandler("Time Update");
-    public static final CustomTimingsHandler serverCommandTimer = new CustomTimingsHandler("Server Command");
+    public static final CustomTimingsHandler serverCommandTimer = new CustomTimingsHandler("net.hyper.mc.spigot.bungeecord.item.Server Command");
     public static final CustomTimingsHandler worldSaveTimer = new CustomTimingsHandler("World Save");
 
     public static final CustomTimingsHandler entityMoveTimer = new CustomTimingsHandler("** entityMove");

@@ -160,7 +160,7 @@ public abstract class MinecraftServer implements Runnable, ICommandListener, IAs
         }
         Runtime.getRuntime().addShutdownHook(new org.bukkit.craftbukkit.util.ServerShutdownThread(this));
 
-        this.serverThread = primaryThread = new Thread(this, "Server thread"); // Moved from main
+        this.serverThread = primaryThread = new Thread(this, "net.hyper.mc.spigot.bungeecord.item.Server thread"); // Moved from main
     }
 
     public abstract PropertyManager getPropertyManager();
@@ -888,7 +888,7 @@ public abstract class MinecraftServer implements Runnable, ICommandListener, IAs
             }
 
             dedicatedserver.D();
-            Runtime.getRuntime().addShutdownHook(new Thread("Server Shutdown Thread") {
+            Runtime.getRuntime().addShutdownHook(new Thread("net.hyper.mc.spigot.bungeecord.item.Server Shutdown Thread") {
                 public void run() {
                     dedicatedserver.stop();
                 }
@@ -1035,7 +1035,7 @@ public abstract class MinecraftServer implements Runnable, ICommandListener, IAs
     }
 
     public String getName() {
-        return "Server";
+        return "net.hyper.mc.spigot.bungeecord.item.Server";
     }
 
     public void sendMessage(IChatBaseComponent ichatbasecomponent) {

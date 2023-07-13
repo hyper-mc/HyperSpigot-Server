@@ -217,7 +217,7 @@ public class SpigotConfig
         timeoutTime = getInt( "settings.timeout-time", timeoutTime );
         restartOnCrash = getBoolean( "settings.restart-on-crash", restartOnCrash );
         restartScript = getString( "settings.restart-script", restartScript );
-        restartMessage = transform( getString( "messages.restart", "Server is restarting" ) );
+        restartMessage = transform( getString( "messages.restart", "net.hyper.mc.spigot.bungeecord.item.Server is restarting" ) );
         commands.put( "restart", new RestartCommand( "restart" ) );
         WatchdogThread.doStart( timeoutTime, restartOnCrash );
     }
@@ -280,7 +280,7 @@ public class SpigotConfig
     private static void playerSample()
     {
         playerSample = getInt( "settings.sample-count", 12 );
-        System.out.println( "Server Ping Player Sample Count: " + playerSample );
+        System.out.println( "net.hyper.mc.spigot.bungeecord.item.Server Ping Player Sample Count: " + playerSample );
     }
 
     public static int playerShuffle;

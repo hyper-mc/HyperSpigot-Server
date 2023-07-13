@@ -47,7 +47,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
     public DedicatedServer(joptsimple.OptionSet options) {
         super(options, Proxy.NO_PROXY, DedicatedServer.a);
         // CraftBukkit end
-        Thread thread = new Thread("Server Infinisleeper") {
+        Thread thread = new Thread("net.hyper.mc.spigot.bungeecord.item.Server Infinisleeper") {
             {
                 this.setDaemon(true);
                 this.start();
@@ -71,7 +71,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
         if(!invetoryPlugin.exists()){
             Files.copy(this.getClass().getResourceAsStream("/hyperspigot-inventories.jar"), invetoryPlugin.toPath());
         }
-        Thread thread = new Thread("Server console handler") {
+        Thread thread = new Thread("net.hyper.mc.spigot.bungeecord.item.Server console handler") {
             public void run() {
                 // CraftBukkit start
                 if (!org.bukkit.craftbukkit.Main.useConsole) {
@@ -145,7 +145,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
         this.setPVP(this.propertyManager.getBoolean("pvp", true));
         this.setAllowFlight(this.propertyManager.getBoolean("allow-flight", false));
         this.setResourcePack(this.propertyManager.getString("resource-pack", ""), this.propertyManager.getString("resource-pack-hash", ""));
-        this.setMotd(this.propertyManager.getString("motd", "A Minecraft Server"));
+        this.setMotd(this.propertyManager.getString("motd", "A Minecraft net.hyper.mc.spigot.bungeecord.item.Server"));
         this.setForceGamemode(this.propertyManager.getBoolean("force-gamemode", false));
         this.setIdleTimeout(this.propertyManager.getInt("player-idle-timeout", 0));
         if (this.propertyManager.getInt("difficulty", 1) < 0) {
@@ -277,7 +277,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
             if (false && this.aS() > 0L) {  // Spigot - disable
                 Thread thread1 = new Thread(new ThreadWatchdog(this));
 
-                thread1.setName("Server Watchdog");
+                thread1.setName("net.hyper.mc.spigot.bungeecord.item.Server Watchdog");
                 thread1.setDaemon(true);
                 thread1.start();
             }
@@ -322,7 +322,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
             public String a() throws Exception {
                 String s = DedicatedServer.this.getServerModName();
 
-                return !s.equals("vanilla") ? "Definitely; Server brand changed to \'" + s + "\'" : "Unknown (can\'t tell)";
+                return !s.equals("vanilla") ? "Definitely; net.hyper.mc.spigot.bungeecord.item.Server brand changed to \'" + s + "\'" : "Unknown (can\'t tell)";
             }
 
             public Object call() throws Exception {
@@ -331,7 +331,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
         });
         crashreport.g().a("Type", new Callable() {
             public String a() throws Exception {
-                return "Dedicated Server (map_server.txt)";
+                return "Dedicated net.hyper.mc.spigot.bungeecord.item.Server (map_server.txt)";
             }
 
             public Object call() throws Exception {

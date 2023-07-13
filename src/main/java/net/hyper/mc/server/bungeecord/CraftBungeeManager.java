@@ -1,11 +1,14 @@
 package net.hyper.mc.server.bungeecord;
 
+import com.google.gson.Gson;
 import net.hyper.mc.spigot.bungeecord.BungeeAction;
+import net.hyper.mc.spigot.bungeecord.item.Server;
 import net.hyper.mc.spigot.player.FakePlayer;
 import net.hyper.mc.spigot.utils.PluginMessage;
 import net.minecraft.server.EntityPlayer;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Player;
+import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -13,6 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,12 +29,22 @@ public class CraftBungeeManager implements net.hyper.mc.spigot.bungeecord.Bungee
     }
 
     private ConcurrentHashMap<String, Map<String, Object>> servers = new ConcurrentHashMap<>();
+    private CopyOnWriteArrayList<Server> SERVER_ITEMS = new CopyOnWriteArrayList<>();
     private CraftServer server;
+    private Gson gson = new Gson();
 
     public CraftBungeeManager(CraftServer server) {
         instance = this;
         this.server = server;
         server.getMessenger().registerOutgoingPluginChannel(null, "BungeeCord");
+        server.getHyperSpigot().getMessenger().registerConsumer("hyperspigot-serveritem", m -> {
+            JSONObject json = (JSONObject) m.getValue();
+            SERVER_ITEMS.clear();
+            for(Object s : json.getJSONArray("itens")){
+                Server sv = gson.fromJson((String) s, Server.class);
+                SERVER_ITEMS.add(sv);
+            }
+        });
     }
 
     @Override
@@ -66,6 +80,11 @@ public class CraftBungeeManager implements net.hyper.mc.spigot.bungeecord.Bungee
     @Override
     public void sendMessage(Player player, String message) {
         requestUpdate(BungeeAction.MESSAGE, player, message);
+    }
+
+    @Override
+    public CopyOnWriteArrayList<Server> getServerItems() {
+        return SERVER_ITEMS;
     }
 
     public void pluginMessage(EntityPlayer player, byte[] data) {

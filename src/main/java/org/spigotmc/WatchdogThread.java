@@ -68,7 +68,7 @@ public class WatchdogThread extends Thread
                 }
                 //
                 log.log( Level.SEVERE, "------------------------------" );
-                log.log( Level.SEVERE, "Server thread dump (Look for plugins here before reporting to Spigot!):" );
+                log.log( Level.SEVERE, "net.hyper.mc.spigot.bungeecord.item.Server thread dump (Look for plugins here before reporting to Spigot!):" );
                 dumpThread( ManagementFactory.getThreadMXBean().getThreadInfo( MinecraftServer.getServer().primaryThread.getId(), Integer.MAX_VALUE ), log );
                 log.log( Level.SEVERE, "------------------------------" );
                 //

@@ -32,7 +32,7 @@ public class ServerConnection {
     private static final Logger e = LogManager.getLogger();
     public static final LazyInitVar<NioEventLoopGroup> a = new LazyInitVar() {
         protected NioEventLoopGroup a() {
-            return new NioEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Server IO #%d").setDaemon(true).build());
+            return new NioEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty net.hyper.mc.spigot.bungeecord.item.Server IO #%d").setDaemon(true).build());
         }
 
         protected Object init() {
@@ -41,7 +41,7 @@ public class ServerConnection {
     };
     public static final LazyInitVar<EpollEventLoopGroup> b = new LazyInitVar() {
         protected EpollEventLoopGroup a() {
-            return new EpollEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Epoll Server IO #%d").setDaemon(true).build());
+            return new EpollEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Epoll net.hyper.mc.spigot.bungeecord.item.Server IO #%d").setDaemon(true).build());
         }
 
         protected Object init() {
@@ -50,7 +50,7 @@ public class ServerConnection {
     };
     public static final LazyInitVar<LocalEventLoopGroup> c = new LazyInitVar() {
         private LocalEventLoopGroup a() {
-            return new LocalEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Local Server IO #%d").setDaemon(true).build());
+            return new LocalEventLoopGroup(0, (new ThreadFactoryBuilder()).setNameFormat("Netty Local net.hyper.mc.spigot.bungeecord.item.Server IO #%d").setDaemon(true).build());
         }
 
         protected Object init() {

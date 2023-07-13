@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>HyperSpigot-Server</artifactId>
-    <name>HyperSpigot-Server</name>
+    <name>HyperSpigot-net.hyper.mc.spigot.bungeecord.item.Server</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <api.version>1.8.8</api.version>
@@ -92,6 +92,12 @@
             <artifactId>lombok</artifactId>
             <version>1.18.28</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.hyper.mc</groupId>
+            <artifactId>HyperSpigot-Inventories</artifactId>
+            <version>1.0.2</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- testing -->

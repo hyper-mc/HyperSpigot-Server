@@ -66,7 +66,7 @@ public class Main {
                 acceptsAll(asList("s", "size", "max-players"), "Maximum amount of players")
                         .withRequiredArg()
                         .ofType(Integer.class)
-                        .describedAs("Server size");
+                        .describedAs("net.hyper.mc.spigot.bungeecord.item.Server size");
 
                 acceptsAll(asList("d", "date-format"), "Format of the date to display in the console (for log entries)")
                         .withRequiredArg()

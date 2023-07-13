@@ -510,7 +510,7 @@ public final class CraftServer implements Server {
 
     @Override
     public String getServerName() {
-        return this.getConfigString("server-name", "Unknown Server");
+        return this.getConfigString("server-name", "Unknown net.hyper.mc.spigot.bungeecord.item.Server");
     }
 
     @Override
@@ -782,10 +782,10 @@ public final class CraftServer implements Server {
         try {
             perms = (Map<String, Map<String, Object>>) yaml.load(stream);
         } catch (MarkedYAMLException ex) {
-            getLogger().log(Level.WARNING, "Server permissions file " + file + " is not valid YAML: " + ex.toString());
+            getLogger().log(Level.WARNING, "net.hyper.mc.spigot.bungeecord.item.Server permissions file " + file + " is not valid YAML: " + ex.toString());
             return;
         } catch (Throwable ex) {
-            getLogger().log(Level.WARNING, "Server permissions file " + file + " is not valid YAML.", ex);
+            getLogger().log(Level.WARNING, "net.hyper.mc.spigot.bungeecord.item.Server permissions file " + file + " is not valid YAML.", ex);
             return;
         } finally {
             try {
@@ -794,7 +794,7 @@ public final class CraftServer implements Server {
         }
 
         if (perms == null) {
-            getLogger().log(Level.INFO, "Server permissions file " + file + " is empty, ignoring it");
+            getLogger().log(Level.INFO, "net.hyper.mc.spigot.bungeecord.item.Server permissions file " + file + " is empty, ignoring it");
             return;
         }
 

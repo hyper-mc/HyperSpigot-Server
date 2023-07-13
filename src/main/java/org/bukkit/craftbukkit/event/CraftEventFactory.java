@@ -429,7 +429,7 @@ public class CraftEventFactory {
     }
 
     /**
-     * Server methods
+     * net.hyper.mc.spigot.bungeecord.item.Server methods
      */
     public static ServerListPingEvent callServerListPingEvent(Server craftServer, InetAddress address, String motd, int numPlayers, int maxPlayers) {
         ServerListPingEvent event = new ServerListPingEvent(address, motd, numPlayers, maxPlayers);
