@@ -2,6 +2,7 @@ package net.hyper.mc.server;
 
 import lombok.Data;
 import lombok.Getter;
+import net.hyper.mc.inventories.InventoriesPlugin;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.bungeecord.CraftBungeeManager;
 import net.hyper.mc.server.command.CashCommand;
@@ -170,4 +171,8 @@ public class CraftHyperSpigot implements HyperSpigot {
         return creator.createWorld();
     }
 
+    @Override
+    public InventoriesPlugin getInventoryPlugin() {
+        return ((InventoriesPlugin) Bukkit.getPluginManager().getPlugin("HyperSpigot-Inventories"));
+    }
 }
