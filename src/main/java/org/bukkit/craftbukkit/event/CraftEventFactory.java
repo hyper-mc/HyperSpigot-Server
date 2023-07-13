@@ -227,6 +227,20 @@ public class CraftEventFactory {
         }
         craftServer.getPluginManager().callEvent(event);
 
+        if(event.getItem() != null && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)){
+            if(player.getHotBarConfig().isCancelEvents()){
+                event.setCancelled(true);
+            }
+            int slot = 0;
+            for (int i = 0; i < 8; i++) {
+                if(event.getItem() == player.getInventory().getItem(i)){
+                    slot = i;
+                    break;
+                }
+            }
+            player.getHotBar().clickEvent(event.getItem(), slot);
+        }
+
         return event;
     }
 

@@ -28,6 +28,8 @@ import net.hyper.mc.server.player.stats.CraftPlayerStatisticsManager;
 import net.hyper.mc.spigot.event.experience.ExperienceAddedEvent;
 import net.hyper.mc.spigot.event.experience.ExperienceLevelUpEvent;
 import net.hyper.mc.spigot.event.experience.ExperienceRemovedEvent;
+import net.hyper.mc.spigot.player.hotbar.HotBar;
+import net.hyper.mc.spigot.player.hotbar.HotBarConfig;
 import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyPlayer;
 import net.hyper.mc.spigot.player.scoreboard.TeamManager;
@@ -1526,6 +1528,49 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
         Long cash = (Long) getData("cash");
         cash -= c;
         setData("cash", cash);
+    }
+
+    private HotBar hotbar = null;
+    private HotBarConfig hotBarConfig = HotBarConfig
+            .builder()
+            .cancelEvents(false)
+            .dropItems(true)
+            .moveItems(true)
+            .build();
+
+    @Override
+    public void setHotBar(HotBar hotbar, HotBarConfig config, boolean clear) {
+        this.hotbar = hotbar;
+        this.hotBarConfig = config;
+        if(clear) {
+            this.getInventory().clear();
+        }
+        Map<Integer, ItemStack> itemToSet = hotbar.getItems();
+        for(int slot : itemToSet.keySet()){
+            this.getInventory().setItem(slot, itemToSet.get(slot));
+        }
+        this.updateInventory();
+    }
+
+    @Override
+    public HotBar getHotBar() {
+        return hotbar;
+    }
+
+    @Override
+    public void removeHotBar(HotBarConfig config) {
+        this.hotBarConfig = config;
+        this.hotbar = null;
+    }
+
+    @Override
+    public HotBarConfig getHotBarConfig() {
+        return hotBarConfig;
+    }
+
+    @Override
+    public void setHotBarConfig(HotBarConfig hotBarConfig) {
+        this.hotBarConfig = hotBarConfig;
     }
 
     // Spigot start
