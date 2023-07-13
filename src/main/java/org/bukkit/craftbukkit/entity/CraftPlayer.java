@@ -1573,6 +1573,14 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
     }
 
     @Override
+    public boolean getPlayerVisibility() {
+        if(!getPlayerData().containsKey("playervisibility")){
+            setPlayerVisibility(true);
+        }
+        return (boolean) getData("playervisibility");
+    }
+
+    @Override
     public void removeHotBar(HotBarConfig config) {
         this.hotBarConfig = config;
         this.hotbar = null;
