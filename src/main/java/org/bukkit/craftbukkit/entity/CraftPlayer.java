@@ -61,6 +61,7 @@ import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftSound;
 import org.bukkit.craftbukkit.CraftStatistic;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.inventory.AbstractItemCreator;
 import org.bukkit.craftbukkit.map.CraftMapView;
 import org.bukkit.craftbukkit.map.RenderData;
 import org.bukkit.craftbukkit.scoreboard.CraftScoreboard;
@@ -1555,6 +1556,20 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
     @Override
     public HotBar getHotBar() {
         return hotbar;
+    }
+    @Override
+    public ItemStack getPlayerVisibilityItem() {
+        if(!getPlayerData().containsKey("playervisibility")){
+            setPlayerVisibility(true);
+        }
+        int color = ((boolean) getData("playervisibility")) ? 2 : 7;
+        return new AbstractItemCreator(Material.INK_SACK)
+                .withDurability((short) color)
+                .withData(color).done();
+    }
+    @Override
+    public synchronized void setPlayerVisibility(boolean b) {
+        setData("playervisibility", b);
     }
 
     @Override
