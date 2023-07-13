@@ -238,7 +238,7 @@ public class CraftEventFactory {
                     break;
                 }
             }
-            player.getHotBar().clickEvent(event.getItem(), slot);
+            player.getHotBar().clickEvent(event.getItem(), slot, player);
         }
 
         return event;

@@ -1546,7 +1546,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
         if(clear) {
             this.getInventory().clear();
         }
-        Map<Integer, ItemStack> itemToSet = hotbar.getItems();
+        Map<Integer, ItemStack> itemToSet = hotbar.getItems(this);
         for(int slot : itemToSet.keySet()){
             this.getInventory().setItem(slot, itemToSet.get(slot));
         }
