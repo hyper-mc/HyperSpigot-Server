@@ -171,7 +171,6 @@ public class CraftHyperSpigot implements HyperSpigot {
         return creator.createWorld();
     }
 
-    @Override
     public InventoriesPlugin getInventoryPlugin() {
         return ((InventoriesPlugin) Bukkit.getPluginManager().getPlugin("HyperSpigot-Inventories"));
     }

@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.hyper.mc.inventories.InventoriesPlugin;
+import net.hyper.mc.server.CraftHyperSpigot;
 import net.hyper.mc.server.player.PlayerContainer;
 import net.hyper.mc.server.player.party.CraftPartyManager;
 import net.hyper.mc.server.player.role.CraftRoleManager;
@@ -1598,12 +1599,12 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
 
     @Override
     public void openProfileMenu(){
-        Bukkit.getHyperSpigot().getInventoryPlugin().openProfile(this);
+        ((CraftHyperSpigot) server.getHyperSpigot()).getInventoryPlugin().openProfile(this);
     }
 
     @Override
     public void openServerMenu(){
-        Bukkit.getHyperSpigot().getInventoryPlugin().openServer(this);
+        ((CraftHyperSpigot) server.getHyperSpigot()).getInventoryPlugin().openServer(this);
     }
 
     // Spigot start

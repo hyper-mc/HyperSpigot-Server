@@ -6,6 +6,7 @@ import net.hyper.mc.spigot.bungeecord.item.Server;
 import net.hyper.mc.spigot.player.FakePlayer;
 import net.hyper.mc.spigot.utils.PluginMessage;
 import net.minecraft.server.EntityPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Player;
 import org.json.JSONObject;
@@ -23,7 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CraftBungeeManager implements net.hyper.mc.spigot.bungeecord.BungeeManager {
 
     private static CraftBungeeManager instance;
-
     public static CraftBungeeManager getInstance() {
         return instance;
     }
@@ -31,6 +31,7 @@ public class CraftBungeeManager implements net.hyper.mc.spigot.bungeecord.Bungee
     private ConcurrentHashMap<String, Map<String, Object>> servers = new ConcurrentHashMap<>();
     private CopyOnWriteArrayList<Server> SERVER_ITEMS = new CopyOnWriteArrayList<>();
     private CraftServer server;
+    private String serverName;
     private Gson gson = new Gson();
 
     public CraftBungeeManager(CraftServer server) {
@@ -87,6 +88,11 @@ public class CraftBungeeManager implements net.hyper.mc.spigot.bungeecord.Bungee
         return SERVER_ITEMS;
     }
 
+    @Override
+    public String getServerName() {
+        return serverName;
+    }
+
     public void pluginMessage(EntityPlayer player, byte[] data) {
         try {
             DataInputStream msg = new DataInputStream(new ByteArrayInputStream(data));
@@ -107,6 +113,9 @@ public class CraftBungeeManager implements net.hyper.mc.spigot.bungeecord.Bungee
             } else if(subChannel.equalsIgnoreCase("PlayerList")){
                 String server = msg.readUTF();
                 String[] playerList = msg.readUTF().split(",");
+                if(Bukkit.getOnlinePlayers().stream().anyMatch(p -> Arrays.stream(playerList).anyMatch(s -> p.getName().equalsIgnoreCase(s)))){
+                    this.serverName = server;
+                }
                 if(servers.containsKey(server)){
                     servers.get(server).replace("playerList", playerList);
                 } else{
