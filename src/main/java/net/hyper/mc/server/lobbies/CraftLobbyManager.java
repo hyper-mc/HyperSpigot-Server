@@ -15,12 +15,14 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftServer;
 import org.json.JSONObject;
 
-import java.awt.image.Kernel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class CraftLobbyManager extends RSTask implements LobbyManager{
@@ -37,6 +39,7 @@ public class CraftLobbyManager extends RSTask implements LobbyManager{
     private Gson gson = new Gson();
     private CopyOnWriteArrayList<WorldLobby> lobbies = new CopyOnWriteArrayList<>();
     private CopyOnWriteArrayList<ServerLobby> networkLobbies = new CopyOnWriteArrayList<>();
+    private ConcurrentMap<String, Integer> networkOnline = new ConcurrentHashMap<>();
 
     public CraftLobbyManager(CraftServer server, HyperMessageBroker broker){
         instance = this;
@@ -64,9 +67,28 @@ public class CraftLobbyManager extends RSTask implements LobbyManager{
                         .filter(s -> s.getServerName().equalsIgnoreCase(sl.getServerName()))
                         .collect(Collectors.toList()).forEach(s -> networkLobbies.remove(s));
                 networkLobbies.add(sl);
+                sl.getLobbiesId().values().forEach(id -> broker.sendMessage("hyperspigot-lobbies", new JSONObject().put("channel", "online").put("id",id)));
+            } else if(channel.equalsIgnoreCase("online")){
+                String id = payload.getString("id");
+                if (hasLobbyID(id)) {
+                    broker.sendMessage("hyperspigot-lobbies", new JSONObject()
+                            .put("channel", "update")
+                                    .put("id", id)
+                            .put("online", lobbies.stream().filter(w -> w.getId().equals(id))
+                                    .findFirst().get().getLocation()
+                                    .getWorld().getPlayers().size()));
+                }
+            } else if(channel.equalsIgnoreCase("update")){
+                int online = payload.getInt("online");
+                networkOnline.put(payload.getString("id"), online);
             }
         });
-        server.getResponsiveScheduler().repeatTask(this, 0, 5000);
+        server.getResponsiveScheduler().repeatTask(this, 0, 20000);
+    }
+
+    @Override
+    public boolean hasLobbyID(String id) {
+        return lobbies.stream().anyMatch(w -> w.getId().equals(id));
     }
 
     @Override
@@ -139,6 +161,16 @@ public class CraftLobbyManager extends RSTask implements LobbyManager{
     @Override
     public String getServerType() {
         return serverType;
+    }
+
+    @Override
+    public int getOnlineInLobbyID(String id) {
+        AtomicInteger online = new AtomicInteger();
+        lobbies.stream().filter(l -> l.getId().equals(id)).findFirst().ifPresent(l -> online.set(l.getLocation().getWorld().getPlayers().size()));
+        if(networkOnline.containsKey(id)){
+            online.set(networkOnline.get(id));
+        }
+        return online.get();
     }
 
     @Override
