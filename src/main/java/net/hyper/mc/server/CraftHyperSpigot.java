@@ -6,6 +6,7 @@ import net.hyper.mc.inventories.InventoriesPlugin;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.bungeecord.CraftBungeeManager;
 import net.hyper.mc.server.command.CashCommand;
+import net.hyper.mc.server.command.SetSpawnCommand;
 import net.hyper.mc.server.lobbies.CraftLobbyManager;
 import net.hyper.mc.server.network.CraftNetworkManager;
 import net.hyper.mc.server.player.PlayerContainer;
@@ -76,6 +77,7 @@ public class CraftHyperSpigot implements HyperSpigot {
 
     public void registerCommands(){
         Bukkit.registerCommand(CashCommand.class);
+        Bukkit.registerCommand(SetSpawnCommand.class);
     }
 
     private void createAndLoadFiles() {
