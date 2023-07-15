@@ -1609,7 +1609,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
 
     @Override
     public void openLobbiesMenu(String type) {
-
+        ((CraftHyperSpigot) server.getHyperSpigot()).getInventoryPlugin().openLobbies(type);
     }
 
     // Spigot start
