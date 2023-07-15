@@ -6,6 +6,7 @@ import net.hyper.mc.inventories.InventoriesPlugin;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.bungeecord.CraftBungeeManager;
 import net.hyper.mc.server.command.CashCommand;
+import net.hyper.mc.server.lobbies.CraftLobbyManager;
 import net.hyper.mc.server.network.CraftNetworkManager;
 import net.hyper.mc.server.player.PlayerContainer;
 import net.hyper.mc.server.player.party.CraftPartyManager;
@@ -13,6 +14,9 @@ import net.hyper.mc.server.player.role.CraftRoleManager;
 import net.hyper.mc.server.player.scoreboard.CraftBoardManager;
 import net.hyper.mc.spigot.HyperSpigot;
 import net.hyper.mc.spigot.bungeecord.BungeeManager;
+import net.hyper.mc.spigot.lobbies.LobbyManager;
+import net.hyper.mc.spigot.lobbies.ServerLobby;
+import net.hyper.mc.spigot.lobbies.WorldLobby;
 import net.hyper.mc.spigot.player.FakePlayer;
 import net.hyper.mc.spigot.player.scoreboard.BoardManager;
 import net.hyper.mc.spigot.player.scoreboard.settings.BoardSettings;
@@ -28,6 +32,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Data
 @Getter
@@ -40,6 +45,7 @@ public class CraftHyperSpigot implements HyperSpigot {
     private CraftPartyManager partyManager;
     private CraftRoleManager roleManager;
     private CraftNetworkManager networkManager;
+    private CraftLobbyManager lobbyManager;
     private CraftServer server;
 
     public CraftHyperSpigot(CraftServer server) {
@@ -61,6 +67,7 @@ public class CraftHyperSpigot implements HyperSpigot {
         bungeeManager = new CraftBungeeManager(server);
         roleManager = new CraftRoleManager(messageBroker);
         networkManager = new CraftNetworkManager(messageBroker);
+        lobbyManager = new CraftLobbyManager(server, messageBroker);
     }
 
     public void createTables(){
@@ -169,6 +176,21 @@ public class CraftHyperSpigot implements HyperSpigot {
         creator.environment(World.Environment.NORMAL);
         creator.type(WorldType.FLAT);
         return creator.createWorld();
+    }
+
+    @Override
+    public CopyOnWriteArrayList<ServerLobby> getNetworkLobbies() {
+        return lobbyManager.getNetworkLobbies();
+    }
+
+    @Override
+    public CopyOnWriteArrayList<WorldLobby> getLobbies() {
+        return lobbyManager.getLobbies();
+    }
+
+    @Override
+    public LobbyManager getLobbyManager() {
+        return lobbyManager;
     }
 
     public InventoriesPlugin getInventoryPlugin() {
