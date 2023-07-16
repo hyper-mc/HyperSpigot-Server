@@ -31,17 +31,20 @@ public class CraftBoardManager implements BoardManager {
         this.scoreboards = new ConcurrentHashMap<>();
         ResponsiveScheduler scheduler = new ResponsiveScheduler();
         scheduler.repeatTask(new BoardUpdateTask(this), 2L, 2L);
-        hyperSpigot.getServer().getOnlinePlayers().forEach(this::setup);
+        if(boardSettings.isDefaultScoreboard())
+            hyperSpigot.getServer().getOnlinePlayers().forEach(this::setup);
         EventHandler.add(e -> {
             if(e instanceof PlayerJoinEvent){
                 scheduler.runTaskAfter(new RSTask() {
                     @Override
                     public void run() {
-                        if (((PlayerJoinEvent) e).getPlayer().isOnline()) { // Set this up 2 ticks later.
-                            setup(((PlayerJoinEvent) e).getPlayer());
+                        if(boardSettings.isDefaultScoreboard()) {
+                            if (((PlayerJoinEvent) e).getPlayer().isOnline()) {
+                                setup(((PlayerJoinEvent) e).getPlayer());
+                            }
                         }
                     }
-                }, 4L);
+                }, 2L);
             } else if(e instanceof PlayerQuitEvent){
                 this.remove(((PlayerQuitEvent)e).getPlayer());
             }
@@ -62,7 +65,7 @@ public class CraftBoardManager implements BoardManager {
         return Optional.ofNullable(scoreboards.get(player.getUniqueId()));
     }
 
-    private void setup(Player player) {
+    public void setup(Player player) {
         Optional.ofNullable(scoreboards.remove(player.getUniqueId())).ifPresent(Board::resetScoreboard);
         if (player.getScoreboard() == Bukkit.getScoreboardManager().getMainScoreboard()) {
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
