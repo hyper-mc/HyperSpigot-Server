@@ -9,12 +9,11 @@ import org.bukkit.entity.Player;
 
 public class SetSpawnCommand {
 
-    private LobbyManager lobbyManager = Bukkit.getHyperSpigot().getLobbyManager();
-
     @Command(names = {"setspawn", "addspawn", "setlobby", "addlobby"}, permission = "perm.admin", playerOnly = true)
     public void setSpawn(Player player,
                          @Param(name = "event", required = false) String event,
                          @Param(name = "type", required = false) String type){
+        LobbyManager lobbyManager = Bukkit.getHyperSpigot().getLobbyManager();
         if(lobbyManager.hasLobbyInWorld(player.getWorld())){
             player.sendMessage("§cJá existe um lobby neste mundo, portanto atualizaremos apenas a localização do spawn.");
             lobbyManager.getLobbyInWorld(player.getWorld()).setLocation(player.getLocation());
