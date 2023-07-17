@@ -9,14 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -1565,8 +1558,10 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
         if(!getPlayerData().containsKey("playervisibility")){
             setPlayerVisibility(true);
         }
-        int color = ((boolean) getData("playervisibility")) ? 2 : 7;
+        int color = getPlayerVisibility() ? 2 : 7;
+        String description = getPlayerVisibility() ? "§7Clique para esconder os jogadores." : "§7Clique para mostrar os jogadores.";
         return new AbstractItemCreator(Material.INK_SACK)
+                .addLore(Arrays.asList("", description))
                 .withDurability((short) color)
                 .withData(color).done();
     }
@@ -1575,7 +1570,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
         setData("playervisibility", b);
     }
     @Override
-    public boolean getPlayerVisibility() {
+    public synchronized boolean getPlayerVisibility() {
         if(!getPlayerData().containsKey("playervisibility")){
             setPlayerVisibility(true);
         }
