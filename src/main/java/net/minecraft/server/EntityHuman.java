@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 // CraftBukkit start
+import net.hyper.mc.server.event.EventHandler;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -598,6 +599,7 @@ public abstract class EntityHuman extends EntityLiving {
             CraftItem drop = new CraftItem(this.world.getServer(), entityitem);
 
             PlayerDropItemEvent event = new PlayerDropItemEvent(player, drop);
+            EventHandler.onDropEvent(event);
             this.world.getServer().getPluginManager().callEvent(event);
 
             if (event.isCancelled()) {

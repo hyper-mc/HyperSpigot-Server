@@ -1,6 +1,7 @@
 package net.minecraft.server;
 
 // CraftBukkit start
+import net.hyper.mc.server.event.EventHandler;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 // CraftBukkit end
@@ -55,6 +56,7 @@ public class BlockDropper extends BlockDispenser {
                         }
 
                         InventoryMoveItemEvent event = new InventoryMoveItemEvent(tileentitydispenser.getOwner().getInventory(), oitemstack.clone(), destinationInventory, true);
+                        EventHandler.onInventoryMoveItem(event);
                         world.getServer().getPluginManager().callEvent(event);
                         if (event.isCancelled()) {
                             return;

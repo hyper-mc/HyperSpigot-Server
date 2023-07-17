@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 // CraftBukkit start
+import net.hyper.mc.server.event.EventHandler;
 import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.HumanEntity;
@@ -263,6 +264,7 @@ public class TileEntityHopper extends TileEntityContainer implements IHopper, IU
                         }
 
                         InventoryMoveItemEvent event = new InventoryMoveItemEvent(this.getOwner().getInventory(), oitemstack.clone(), destinationInventory, true);
+                        EventHandler.onInventoryMoveItem(event);
                         this.getWorld().getServer().getPluginManager().callEvent(event);
                         if (event.isCancelled()) {
                             this.setItem(i, itemstack);
@@ -402,7 +404,7 @@ public class TileEntityHopper extends TileEntityContainer implements IHopper, IU
             }
 
             InventoryMoveItemEvent event = new InventoryMoveItemEvent(sourceInventory, oitemstack.clone(), ihopper.getOwner().getInventory(), false);
-
+            EventHandler.onInventoryMoveItem(event);
             ihopper.getWorld().getServer().getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 iinventory.setItem(i, itemstack1);
@@ -442,6 +444,7 @@ public class TileEntityHopper extends TileEntityContainer implements IHopper, IU
         } else {
             // CraftBukkit start
             InventoryPickupItemEvent event = new InventoryPickupItemEvent(iinventory.getOwner().getInventory(), (org.bukkit.entity.Item) entityitem.getBukkitEntity());
+            EventHandler.onInventoryPickUp(event);
             entityitem.world.getServer().getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 return false;

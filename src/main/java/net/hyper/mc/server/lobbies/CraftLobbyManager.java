@@ -6,13 +6,19 @@ import balbucio.sqlapi.sqlite.SQLiteInstance;
 import com.google.gson.Gson;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.bungeecord.CraftBungeeManager;
+import net.hyper.mc.server.event.EventHandler;
+import net.hyper.mc.spigot.bungeecord.BungeeAction;
 import net.hyper.mc.spigot.lobbies.LobbyManager;
 import net.hyper.mc.spigot.lobbies.ServerLobby;
 import net.hyper.mc.spigot.lobbies.WorldLobby;
+import net.hyper.mc.spigot.player.FakePlayer;
 import net.hyper.mc.spigot.world.Position;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -40,6 +46,7 @@ public class CraftLobbyManager extends RSTask implements LobbyManager{
     private CopyOnWriteArrayList<WorldLobby> lobbies = new CopyOnWriteArrayList<>();
     private CopyOnWriteArrayList<ServerLobby> networkLobbies = new CopyOnWriteArrayList<>();
     private ConcurrentMap<String, Integer> networkOnline = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, String> teleport = new ConcurrentHashMap<>();
 
     public CraftLobbyManager(CraftServer server, HyperMessageBroker broker){
         instance = this;
@@ -81,9 +88,24 @@ public class CraftLobbyManager extends RSTask implements LobbyManager{
             } else if(channel.equalsIgnoreCase("update")){
                 int online = payload.getInt("online");
                 networkOnline.put(payload.getString("id"), online);
+            } else if(channel.equalsIgnoreCase("connect")) {
+                String player = payload.getString("player");
+                String lobbyID = payload.getString("lobbyID");
+                if (getLobbyWithId(lobbyID) != null) {
+                    server.getHyperSpigot().getBungeeManager().requestUpdate(BungeeAction.CONNECT, new FakePlayer(player), server.getHyperSpigot().getBungeeManager().getServerName());
+                    teleport.put(player, lobbyID);
+                }
             }
         });
         server.getResponsiveScheduler().repeatTask(this, 0, 20000);
+        EventHandler.add(evt -> {
+            if(evt instanceof PlayerJoinEvent){
+                Player player = ((PlayerJoinEvent) evt).getPlayer();
+                if(teleport.containsKey(player.getName())){
+                    getLobbyWithId(player.getName()).teleport(player);
+                }
+            }
+        });
     }
 
     @Override
@@ -171,6 +193,13 @@ public class CraftLobbyManager extends RSTask implements LobbyManager{
             online.set(networkOnline.get(id));
         }
         return online.get();
+    }
+
+    @Override
+    public void connectServerLobby(String lobbyID, Player player) {
+        broker.sendMessage("hyperspigot-lobbies", new JSONObject().put("channel", "connect")
+                .put("lobbyID", lobbyID)
+                .put("player", player.getName()));
     }
 
     @Override

@@ -30,6 +30,7 @@ import net.hyper.mc.server.player.stats.CraftPlayerStatisticsManager;
 import net.hyper.mc.spigot.event.experience.ExperienceAddedEvent;
 import net.hyper.mc.spigot.event.experience.ExperienceLevelUpEvent;
 import net.hyper.mc.spigot.event.experience.ExperienceRemovedEvent;
+import net.hyper.mc.spigot.lobbies.WorldLobby;
 import net.hyper.mc.spigot.player.hotbar.HotBar;
 import net.hyper.mc.spigot.player.hotbar.HotBarConfig;
 import net.hyper.mc.spigot.player.party.Party;
@@ -1610,6 +1611,12 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
     @Override
     public void openLobbiesMenu(String type) {
         ((CraftHyperSpigot) server.getHyperSpigot()).getInventoryPlugin().openLobbies(type);
+    }
+
+    @Override
+    public WorldLobby getLobby() {
+        return server.getHyperSpigot().getLobbies()
+                .stream().filter(l -> l.hasPlayer(this)).findFirst().orElse(null);
     }
 
     // Spigot start
