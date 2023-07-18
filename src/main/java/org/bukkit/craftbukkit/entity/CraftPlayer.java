@@ -1605,7 +1605,12 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
 
     @Override
     public void openLobbiesMenu(String type) {
-        ((CraftHyperSpigot) server.getHyperSpigot()).getInventoryPlugin().openLobbies(type);
+        ((CraftHyperSpigot) server.getHyperSpigot()).getInventoryPlugin().openLobbies(type, this);
+    }
+
+    @Override
+    public void openPartyMenu() {
+        ((CraftHyperSpigot) server.getHyperSpigot()).getInventoryPlugin().openParty(this);
     }
 
     @Override
