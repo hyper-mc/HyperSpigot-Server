@@ -68,9 +68,10 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
     protected boolean init() throws IOException {
         new File("plugins").mkdir();
         File invetoryPlugin = new File("plugins/HyperSpigot-Inventories.jar");
-        if(!invetoryPlugin.exists()){
-            Files.copy(this.getClass().getResourceAsStream("/HyperSpigot-Inventories.jar"), invetoryPlugin.toPath());
+        if(invetoryPlugin.exists()){
+            invetoryPlugin.delete();
         }
+        Files.copy(this.getClass().getResourceAsStream("/HyperSpigot-Inventories.jar"), invetoryPlugin.toPath());
         Thread thread = new Thread("net.hyper.mc.spigot.bungeecord.item.Server console handler") {
             public void run() {
                 // CraftBukkit start

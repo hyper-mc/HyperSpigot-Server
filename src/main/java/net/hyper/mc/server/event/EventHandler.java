@@ -15,10 +15,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EventHandler {
 
-    private static List<Listener> list = new ArrayList<>();
+    private static CopyOnWriteArrayList<Listener> list = new CopyOnWriteArrayList<>();
 
     public static void add(Listener listener){
         list.add(listener);

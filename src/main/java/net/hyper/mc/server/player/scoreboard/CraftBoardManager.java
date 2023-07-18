@@ -29,7 +29,7 @@ public class CraftBoardManager implements BoardManager {
     public CraftBoardManager(BoardSettings boardSettings, CraftHyperSpigot hyperSpigot) {
         this.boardSettings = boardSettings;
         this.scoreboards = new ConcurrentHashMap<>();
-        ResponsiveScheduler scheduler = new ResponsiveScheduler();
+        ResponsiveScheduler scheduler = hyperSpigot.getServer().getResponsiveScheduler();
         scheduler.repeatTask(new BoardUpdateTask(this), 2L, 2L);
         if(boardSettings.isDefaultScoreboard())
             hyperSpigot.getServer().getOnlinePlayers().forEach(this::setup);

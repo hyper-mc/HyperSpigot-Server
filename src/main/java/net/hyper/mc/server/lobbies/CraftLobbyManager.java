@@ -69,12 +69,15 @@ public class CraftLobbyManager extends RSTask implements LobbyManager{
             JSONObject payload = (JSONObject) m.getValue();
             String channel = payload.getString("channel");
             if(channel.equalsIgnoreCase("server")){
+
                 ServerLobby sl = gson.fromJson(payload.getString("data"), ServerLobby.class);
-                networkLobbies.stream()
-                        .filter(s -> s.getServerName().equalsIgnoreCase(sl.getServerName()))
-                        .collect(Collectors.toList()).forEach(s -> networkLobbies.remove(s));
-                networkLobbies.add(sl);
-                sl.getLobbiesId().values().forEach(id -> broker.sendMessage("hyperspigot-lobbies", new JSONObject().put("channel", "online").put("id",id)));
+                if(sl != null && sl.getServerName() != null) {
+                    networkLobbies.stream()
+                            .filter(s -> s.getServerName().equalsIgnoreCase(sl.getServerName()))
+                            .collect(Collectors.toList()).forEach(s -> networkLobbies.remove(s));
+                    networkLobbies.add(sl);
+                    sl.getLobbiesId().values().forEach(id -> broker.sendMessage("hyperspigot-lobbies", new JSONObject().put("channel", "online").put("id", id)));
+                }
             } else if(channel.equalsIgnoreCase("online")){
                 String id = payload.getString("id");
                 if (hasLobbyID(id)) {
@@ -224,6 +227,9 @@ public class CraftLobbyManager extends RSTask implements LobbyManager{
     @Override
     public void run() {
         save();
+        CraftBungeeManager.getInstance().requestUpdate(BungeeAction.SERVER_LIST, null, null);
+        CraftBungeeManager.getInstance().requestUpdate(BungeeAction.PLAYER_LIST, null, null);
+        CraftBungeeManager.getInstance().requestUpdate(BungeeAction.PLAYER_COUNT, null, null);
         ServerLobby serverLobby = new ServerLobby();
         serverLobby.setServerName(CraftBungeeManager.getInstance().getServerName());
         Map<String, List<String>> lobbiesID = new HashMap<>();

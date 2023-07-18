@@ -1574,7 +1574,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
         if(!getPlayerData().containsKey("playervisibility")){
             setPlayerVisibility(true);
         }
-        return (boolean) getData("playervisibility");
+        return Boolean.parseBoolean((String) getData("playervisibility"));
     }
 
     @Override
