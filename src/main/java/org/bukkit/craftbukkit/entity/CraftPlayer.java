@@ -24,6 +24,7 @@ import net.hyper.mc.spigot.event.experience.ExperienceAddedEvent;
 import net.hyper.mc.spigot.event.experience.ExperienceLevelUpEvent;
 import net.hyper.mc.spigot.event.experience.ExperienceRemovedEvent;
 import net.hyper.mc.spigot.lobbies.WorldLobby;
+import net.hyper.mc.spigot.model.ConfirmModel;
 import net.hyper.mc.spigot.player.hotbar.HotBar;
 import net.hyper.mc.spigot.player.hotbar.HotBarConfig;
 import net.hyper.mc.spigot.player.party.Party;
@@ -1617,6 +1618,11 @@ public class CraftPlayer extends CraftHumanEntity implements Player, PartyPlayer
     public WorldLobby getLobby() {
         return server.getHyperSpigot().getLobbies()
                 .stream().filter(l -> l.hasPlayer(this)).findFirst().orElse(null);
+    }
+
+    @Override
+    public void openConfirmMenu(ConfirmModel YES, ConfirmModel NO) {
+        ((CraftHyperSpigot) server.getHyperSpigot()).getInventoryPlugin().openConfirm(this, YES, NO);
     }
 
     // Spigot start
