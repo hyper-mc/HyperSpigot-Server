@@ -120,7 +120,8 @@ public class CraftPartyManager implements PartyManager {
         }
 
         if (party.getConvites().containsKey(player.getName()) || party.isOpen()) {
-            long time = party.getConvites().get(player.getName());
+            long time = party.getConvites().getOrDefault(player.getName(), 0L);
+            party.removeConvite(player.getName());
             if (time <= Calendar.getInstance().getTimeInMillis() && !party.isOpen()) {
                 player.sendMessage("§cO seu convite para entrar na party expirou!");
                 return;
@@ -148,6 +149,7 @@ public class CraftPartyManager implements PartyManager {
                 player.sendMessage("§cVocê já convidou este jogador.");
                 return;
             }
+            party.removeConvite(targetName);
             party.addConvite(targetName);
             if (target != null) {
                 target.sendMessage("");
