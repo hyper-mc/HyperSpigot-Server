@@ -3,7 +3,6 @@ package net.hyper.mc.server.player.party;
 import balbucio.sqlapi.sqlite.SQLiteInstance;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
 import net.hyper.mc.server.network.CraftNetworkManager;
-import net.hyper.mc.server.player.party.gui.PartyListener;
 import net.hyper.mc.spigot.player.party.Party;
 import net.hyper.mc.spigot.player.party.PartyManager;
 import net.hyper.mc.spigot.player.party.PartyPlayer;
@@ -219,7 +218,6 @@ public class CraftPartyManager implements PartyManager {
             player.sendMessage("§aCrie uma party enviando um convite!");
             player.sendMessage("§aPara enviar um convite, use: §7/party <jogador>");
         } else {
-
             player.openPartyMenu();
         }
     }
