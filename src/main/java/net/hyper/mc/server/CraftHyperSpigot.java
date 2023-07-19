@@ -201,6 +201,10 @@ public class CraftHyperSpigot implements HyperSpigot {
         return networkManager;
     }
 
+    public CraftPartyManager getPartyManager() {
+        return partyManager;
+    }
+
     public InventoriesPlugin getInventoryPlugin() {
         return ((InventoriesPlugin) Bukkit.getPluginManager().getPlugin("HyperSpigot-Inventories"));
     }
