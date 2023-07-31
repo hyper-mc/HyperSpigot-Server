@@ -1,5 +1,6 @@
 package net.hyper.mc.server.player;
 
+import balbucio.sqlapi.model.ConditionModifier;
 import balbucio.sqlapi.model.ConditionValue;
 import balbucio.sqlapi.sqlite.SQLiteInstance;
 import net.hyper.mc.msgbrokerapi.HyperMessageBroker;
@@ -29,6 +30,10 @@ public class PlayerContainer {
     private HyperMessageBroker broker;
     private boolean sync = false;
 
+    public static ConditionValue[] nameEquals = new ConditionValue[]{
+            new ConditionValue("name", ConditionValue.Conditional.EQUALS, "", ConditionValue.Operator.NULL)
+    };
+
     public PlayerContainer(CraftServer server){
         setInstance(this);
         this.server = server;
@@ -48,17 +53,12 @@ public class PlayerContainer {
                 }
 
                 SQLiteInstance sqlite = server.getSQLiteInstance();
+                ConditionModifier conditionModifier = new ConditionModifier(nameEquals, player);
 
-                if(sqlite.exists(new ConditionValue[]{
-                        new ConditionValue("name", ConditionValue.Conditional.EQUALS, player, ConditionValue.Operator.NULL)
-                }, "playercontainer")){
-                    JSONObject existent = new JSONObject(sqlite.get(new ConditionValue[]{
-                            new ConditionValue("name", ConditionValue.Conditional.EQUALS, player, ConditionValue.Operator.NULL)
-                    }, "data", "playercontainer"));
+                if(sqlite.exists(conditionModifier.done(), "playercontainer")){
+                    JSONObject existent = new JSONObject(sqlite.get(conditionModifier.done(), "data", "playercontainer"));
 
-                    sqlite.set(new ConditionValue[]{
-                            new ConditionValue("name", ConditionValue.Conditional.EQUALS, player, ConditionValue.Operator.NULL)
-                    }, "data", existent.put(update.getString("key"), update.get("value")).toString(), "playercontainer");
+                    sqlite.set(conditionModifier.done(), "data", existent.put(update.getString("key"), update.get("value")).toString(), "playercontainer");
 
                 } else{
                     sqlite.insert("name, data", "'"+player+"', '"+new JSONObject().put(update.getString("key"), update.get("value")).toString()+"'", "playercontainer");
@@ -77,9 +77,7 @@ public class PlayerContainer {
         json.put(key, obj);
         instance.container.replace(player.getName(), json);
 
-        instance.server.getSQLiteInstance().set(new ConditionValue[]{
-                new ConditionValue("name", ConditionValue.Conditional.EQUALS, player.getName(), ConditionValue.Operator.NULL)
-        }, "data", instance.container.get(player.getName()).toString(), "playercontainer");
+        instance.server.getSQLiteInstance().set(new ConditionModifier(nameEquals, player.getName()).done(), "data", instance.container.get(player.getName()).toString(), "playercontainer");
 
         if(instance.sync){
             instance.broker.sendMessage("hyperspigot-playercontainer", new JSONObject().put("key", key).put("value", obj).put("player", player.getName()).toString());
@@ -92,12 +90,10 @@ public class PlayerContainer {
 
     public static void addPlayer(EntityPlayer player){
         SQLiteInstance sqlite = instance.server.getSQLiteInstance();
-        if(sqlite.exists(new ConditionValue[]{
-                new ConditionValue("name", ConditionValue.Conditional.EQUALS, player.getName(), ConditionValue.Operator.NULL)
-        }, "playercontainer")){
-            instance.container.put(player.getName(), new JSONObject((String) sqlite.get(new ConditionValue[]{
-                    new ConditionValue("name", ConditionValue.Conditional.EQUALS, player.getName(), ConditionValue.Operator.NULL)
-            }, "data", "playercontainer")));
+        if(sqlite.exists(new ConditionModifier(nameEquals, player.getName()).done(), "playercontainer")){
+            instance.container.put(player.getName(), new JSONObject((String)
+                    sqlite.get(new ConditionModifier(nameEquals, player.getName()).done(), "data", "playercontainer")
+            ));
         } else{
             sqlite.insert("name, data", "'"+player.getName()+"', '"+new JSONObject().toString()+"'", "playercontainer");
             instance.container.put(player.getName(), new JSONObject());
